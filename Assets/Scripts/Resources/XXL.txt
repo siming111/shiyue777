@@ -1,0 +1,14 @@
+-- import "UnityEngine"
+local XXL = XXL or {}
+
+function XXL:new()
+    o = o or {}
+    setmetatable( o, { __index = self }) 
+    return o   
+end
+
+function XXL:Hello(  )
+    Debug.Log("sss")
+end
+
+return XXL
