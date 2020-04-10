@@ -1,5 +1,6 @@
--- import "UnityEngine"
 local XXL = XXL or {}
+
+blocks = {}
 
 function XXL:new()
     o = o or {}
@@ -7,8 +8,18 @@ function XXL:new()
     return o   
 end
 
-function XXL:Hello(  )
-    Debug.Log("sss")
+function XXL:Hello()
+    space = 140;
+    shiftX = 87;
+    shiftY = -142;
+    gameObject = Resources.Load("Block");
+    for i=1,9,1 do
+        for j=1,7,1 do
+            father = GameObject.Find("Canvas/GuildCrushWindow/Bg/Board").transform
+            block = GameObject.Instantiate(gameObject, father);
+            block.transform.localPosition = Vector3(shiftX+(i-1)*space, shiftY-(j-1)*space, 0);
+        end
+    end
 end
 
 return XXL

@@ -1,13 +1,16 @@
 import "UnityEngine"
+-- import "System.Collections";
+-- import "System.Collections.Generic";
 local XXL = require "XXL"
 --local fight = require "fight"
+
 function Awake()
     -- body
     print "hello lua"
     print("Lua创建了一个Cube")
     Debug.Log("SSSSSSSS")
-    local x = XXL:new()
-    x:Hello()
+    -- local x = XXL:new()
+    -- x:Hello()
     -- local cube2 =  cubeInstance:new()
 end
 

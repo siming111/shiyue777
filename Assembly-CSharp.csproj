@@ -85,8 +85,8 @@
      <Compile Include="Assets\LeanTween\Testing\TestingRotate.cs" />
      <Compile Include="Assets\LeanTween\Testing\TestingSceneSwitching.cs" />
      <Compile Include="Assets\LeanTween\Testing\TestingSequencer.cs" />
+     <Compile Include="Assets\Scripts\Entrance.cs" />
      <Compile Include="Assets\Scripts\hello.cs" />
-     <Compile Include="Assets\Scripts\s.cs" />
      <Compile Include="Assets\Slua\example\Circle.cs" />
      <Compile Include="Assets\Slua\example\Custom.cs" />
      <Compile Include="Assets\Slua\example\Deleg.cs" />
@@ -835,6 +835,7 @@
      <None Include="Assets\LeanTween\License.txt" />
      <None Include="Assets\Slua\Resources\custom.txt" />
      <None Include="Assets\Slua\Resources\new_coroutine.txt" />
+     <None Include="Assets\Scripts\Resources\TopFightPanel.txt" />
  <Reference Include="UnityEngine.CoreModule">
  <HintPath>D:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
  </Reference>
