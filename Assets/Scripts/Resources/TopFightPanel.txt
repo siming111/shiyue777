@@ -1,0 +1,18 @@
+local TopFightPanel = TopFightPanel or {}
+function TopFightPanel:new(  )
+    o = o or {}
+    setmetatable( o, { __index = self }) 
+    return o  
+end
+
+function TopFightPanel:Init( )
+    local GuildCrushWindow = GameObject.Find("GuildCrushWindow")
+    -- content = GuildCrushWindow.content;
+    local UpPanel = GameObject.Find("GuildCrushWindow/up")
+    -- UpPanel.transform.sizeDelta = UnityEngine.Vector2(50, 50)
+    
+    -- local UpContainer = GuildCrushWindow:GetComponent(UnityEngine.UI.Button)
+    -- RectTransform (UnityEngine.RectTransform)
+
+end
+return TopFightPanel
