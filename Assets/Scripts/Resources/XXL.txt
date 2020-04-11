@@ -7,7 +7,7 @@ sprites = {}
 
 function XXL:new()
     o = o or {}
-    setmetatable( o, { __index = self }) 
+    setmetatable( o, { __index = self })
     return o   
 end
 
@@ -39,13 +39,18 @@ function XXL:Hello()
             -- -- block:GetComponent(BoardBlock).y = -1
             -- -- block:GetComponent(BoardBlock).type = blockItems[i][j].type
             -- block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(Click)
-                blockItem = BlockItem:new(i,j,math.random(6))
-                blockItem.block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
-                    function()
-                        Click(blockItem)
-                    end
-                )
-                blockItems[i][j].blockItem = blockItem
+            local blockItem = BlockItem:new(i,j,math.random(6))
+            local i = blockItem.i
+            local j = blockItem.j
+            local blockType = blockItem.blockType
+            local btn = blockItem.block
+
+            btn:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
+                function()
+                    XXL:Click(i,j,blockType)
+                end
+            )
+            blockItems[i][j].blockItem = blockItem
         end
     end
     -- local block = BlockItem:new(1,2,3)
@@ -63,11 +68,10 @@ function LoadSprites()
     end
 end
 
-function Click(blockItem)
-    -- Debug.Log("i = "..blockItem.i..",j = "..blockItem.j..",type = "..blockItem.blockType)
-    -- Debug.Log("Click")
-    Debug.Log(blockItem)
-    Debug.Log(blockItem.blockType)
+function XXL:Click(i,j,blockType)
+    -- Debug.Log(self.blockItem[i][j].blockType)
+    Debug.Log(blockType)
+    Debug.Log(i..j)
 end
 
 return XXL

@@ -1,17 +1,30 @@
 local TopFightPanel = TopFightPanel or {}
-function TopFightPanel:new(  )
+function TopFightPanel:new()
     o = o or {}
     setmetatable( o, { __index = self }) 
     return o  
 end
 
-function TopFightPanel:Init( )
-    local GuildCrushWindow = GameObject.Find("GuildCrushWindow")
-    -- content = GuildCrushWindow.content;
-    local UpPanel = GameObject.Find("GuildCrushWindow/up")
+function TopFightPanel:Init()
+    --获得当前关卡
+    local level = 1
+    self:InitPanel()
+    Debug.Log(" TopFightPanel:Init")
+
+
+
+    self:InitData(level)
     -- UpPanel.transform.sizeDelta = UnityEngine.Vector2(50, 50)
     
     -- local UpContainer = GuildCrushWindow:GetComponent(UnityEngine.UI.Button)
     -- RectTransform (UnityEngine.RectTransform)
+end
+function TopFightPanel:InitPanel()
+    local GuildCrushWindow = GameObject.Find("GuildCrushWindow")
+    local TopPanel = GameObject.Find("GuildCrushWindow/TopPanel")
+    local BossImage = GameObject.Find("GuildCrushWindow/TopPanel/Boss")
+    local AttackCountDown_text = GameObject.Find("GuildCrushWindow/TopPanel/Boss/AttackCountDown_text")
+end
+function TopFightPanel:InitData()
 end
 return TopFightPanel
