@@ -1,0 +1,13 @@
+local Block = Block or {}
+
+
+function Block:new()
+    local o = o or {}
+    setmetatable( o, { __index = self }) 
+    -- self.i = i
+    -- self.j = j
+    -- self.type = type
+    return o   
+end
+
+return Block
