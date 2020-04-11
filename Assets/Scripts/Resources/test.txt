@@ -4,13 +4,13 @@ import "UnityEngine.UI"
 -- import "System.Collections.Generic";
 local _XXL = require "XXL"
 local _Top = require "TopFightPanel"
+local x = _XXL:new()
 
 function Awake()
     -- body
     print "hello lua"
     print("Lua创建了一个Cube")
     Debug.Log("SSSSSSSS")
-    local x = _XXL:new()
     x:Hello()
     local TopFightPanel = _Top:new()
     TopFightPanel:Init()

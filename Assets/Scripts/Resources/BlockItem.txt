@@ -1,14 +1,14 @@
 local BlockItem = BlockItem or {}
 
 local space = 126
-local shiftX = 87
-local shiftY = -142
+local shiftX = 80
+local shiftY = -135
 local board = GameObject.Find("Canvas/GuildCrushWindow/Down/Board").transform
 local Obj = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Block").transform
 local sprites = {}
 
 function BlockItem:new(i,j,blockType)
-    local o = o or {}
+    local o = {}
     setmetatable( o, { __index = self })
     o.i = i
     o.j = j
