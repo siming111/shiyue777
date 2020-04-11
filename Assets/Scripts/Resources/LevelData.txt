@@ -1,0 +1,11 @@
+--[[
+    @desc : 关卡信息
+    @author: yxy
+]]
+local LevelData ={
+    [1] = {
+        EnemyNum = 1    --几只怪
+        ,
+    } --第一关
+}
+return LevelData

@@ -1,0 +1,10 @@
+--[[
+    @desc : 怪物信息
+    @author: yxy
+]]
+local EnemyData ={
+    Power = 25      --攻击力
+    ,FightRound = 3 --攻击回合
+    ,HP  =  100     --血量
+}
+return EnemyData

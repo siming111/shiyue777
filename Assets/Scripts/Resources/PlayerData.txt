@@ -1,5 +1,11 @@
+--[[
+    @desc : 玩家信息
+    @author: yxy
+]]
 local PlayerDate ={
-    Power =  
-
+    Power =  10     --攻击力
+    ,Energy = 10    --能量
+    ,HP = 100       --血量
+    ,Shield = 50    --护盾
 }
 return PlayerDate

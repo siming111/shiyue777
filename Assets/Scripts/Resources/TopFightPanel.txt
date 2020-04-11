@@ -13,6 +13,5 @@ function TopFightPanel:Init( )
     
     -- local UpContainer = GuildCrushWindow:GetComponent(UnityEngine.UI.Button)
     -- RectTransform (UnityEngine.RectTransform)
-
 end
 return TopFightPanel

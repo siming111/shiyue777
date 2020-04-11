@@ -2,19 +2,21 @@ import "UnityEngine"
 import "UnityEngine.UI"
 -- import "System.Collections";
 -- import "System.Collections.Generic";
-local XXL = require "XXL"
--- local fight = require "fight"
+local _XXL = require "XXL"
+local _Top = require "TopFightPanel"
 
 function Awake()
     -- body
     print "hello lua"
     print("Lua创建了一个Cube")
     Debug.Log("SSSSSSSS")
-    local x = XXL:new()
+    local x = _XXL:new()
     x:Hello()
+    local TopFightPanel = _Top:new()
+    TopFightPanel:Init()
     -- local cube2 =  cubeInstance:new()
 end
 
-function Update(  )
-    
+function Update()
+    x:Update()
 end
