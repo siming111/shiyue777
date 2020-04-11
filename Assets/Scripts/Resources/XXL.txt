@@ -1,5 +1,7 @@
+-- import "BoardBlock"
 local XXL = XXL or {}
 
+-- Block = require "Block"
 blocks = {}
 sprites = {}
 
@@ -26,15 +28,21 @@ function XXL:Hello()
             if blocks[i][j] ==nil then
                 blocks[i][j] ={}
             end
-            blocks[i][j].block = GameObject.Instantiate(Obj, board);
-            blocks[i][j].block.gameObject:SetActive(true)
-            blocks[i][j].block.transform.localPosition = Vector3(shiftX+(i-1)*space, shiftY-(j-1)*space, 0)
+            local block = GameObject.Instantiate(Obj, board);
+            blocks[i][j].block = block
+            block.gameObject:SetActive(true)
+            block.transform.localPosition = Vector3(shiftX+(i-1)*space, shiftY-(j-1)*space, 0)
             blocks[i][j].type = math.random(6)
             blocks[i][j].image = blocks[i][j].block.transform:Find("icon")
             blocks[i][j].image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[blocks[i][j].type]
-            
+            -- block:GetComponent(BoardBlock).x = -1
+            -- block:GetComponent(BoardBlock).y = -1
+            -- block:GetComponent(BoardBlock).type = blocks[i][j].type
+            block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(Click)
         end
     end
+    -- local block = Block:new(1,2,3)
+    -- Debug.Log(block.type)
 end
 
 function XXL:Update()
@@ -47,6 +55,10 @@ function LoadSprites()
         sprites[i] = Resources.Load("Textures/Crush/Icon"..i,Sprite)
         -- sprites[i] = Resources.Load("Textures/7Tex/Icon","Icon_"..i,Sprite)
     end
+end
+
+function Click()
+    Debug.Log("Click")
 end
 
 return XXL

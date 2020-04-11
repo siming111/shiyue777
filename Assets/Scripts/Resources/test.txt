@@ -3,7 +3,7 @@ import "UnityEngine.UI"
 -- import "System.Collections";
 -- import "System.Collections.Generic";
 local XXL = require "XXL"
---local fight = require "fight"
+-- local fight = require "fight"
 
 function Awake()
     -- body
