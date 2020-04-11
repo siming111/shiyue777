@@ -1,6 +1,7 @@
 local XXL = XXL or {}
 
 blocks = {}
+sprites = {}
 
 function XXL:new()
     o = o or {}
@@ -9,16 +10,42 @@ function XXL:new()
 end
 
 function XXL:Hello()
-    space = 140;
-    shiftX = 87;
-    shiftY = -142;
-    gameObject = Resources.Load("Block");
+    local space = 126
+    local shiftX = 87
+    local shiftY = -142
+    -- local Obj = Resources.Load("Block")
+    local Obj = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Block").transform
+    Obj.gameObject:SetActive(false)
+    local board = GameObject.Find("Canvas/GuildCrushWindow/Down/Board").transform
+    LoadSprites()
     for i=1,9,1 do
-        for j=1,7,1 do
-            father = GameObject.Find("Canvas/GuildCrushWindow/Bg/Board").transform
-            block = GameObject.Instantiate(gameObject, father);
-            block.transform.localPosition = Vector3(shiftX+(i-1)*space, shiftY-(j-1)*space, 0);
+        if blocks[i] ==nil then 
+            blocks[i] ={}
         end
+        for j=1,7,1 do
+            if blocks[i][j] ==nil then
+                blocks[i][j] ={}
+            end
+            blocks[i][j].block = GameObject.Instantiate(Obj, board);
+            blocks[i][j].block.gameObject:SetActive(true)
+            blocks[i][j].block.transform.localPosition = Vector3(shiftX+(i-1)*space, shiftY-(j-1)*space, 0)
+            blocks[i][j].type = math.random(6)
+            blocks[i][j].image = blocks[i][j].block.transform:Find("icon")
+            blocks[i][j].image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[blocks[i][j].type]
+            
+        end
+    end
+end
+
+function XXL:Update()
+    
+end
+
+function LoadSprites()
+    for i = 1,6,1 do
+        -- Textures/Crush/Icon
+        sprites[i] = Resources.Load("Textures/Crush/Icon"..i,Sprite)
+        -- sprites[i] = Resources.Load("Textures/7Tex/Icon","Icon_"..i,Sprite)
     end
 end
 
