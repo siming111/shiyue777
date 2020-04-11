@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class hello : MonoBehaviour {
 
-
+    private GameObject icon1;
 	// Use this for initialization
 	void Start () {
-        float space = 140f;
+        float space = 0f;
         float shiftX = 87f;
         float shiftY = -142f;
         GameObject gameObject = Resources.Load("Block") as GameObject;
@@ -19,9 +19,10 @@ public class hello : MonoBehaviour {
             {
                 GameObject block = Instantiate(gameObject, GameObject.Find("Canvas/GuildCrushWindow/Bg/Board").transform);
                 block.transform.localPosition = new Vector3(shiftX+i*space, shiftY-j*space, 0);
-                Image image = block.GetComponent<Image>();
+                GameObject icon = block.transform.Find("icon").gameObject;
+                Image image = icon.GetComponent<Image>();
                 Debug.Log(image);
-                image.sprite = Resources.Load("Textures/Crush/icon2") as Sprite;
+                image.sprite = Resources.Load<Sprite>("Textures/Crush/icon1") ;
             }
         }
     }
