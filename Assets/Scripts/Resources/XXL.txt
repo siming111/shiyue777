@@ -1,8 +1,8 @@
 -- import "BoardBlock"
 local XXL = XXL or {}
 
--- Block = require "Block"
-blocks = {}
+local BlockItem = require "BlockItem"
+blockItems = {}
 sprites = {}
 
 function XXL:new()
@@ -21,28 +21,34 @@ function XXL:Hello()
     local board = GameObject.Find("Canvas/GuildCrushWindow/Down/Board").transform
     LoadSprites()
     for i=1,9,1 do
-        if blocks[i] ==nil then 
-            blocks[i] ={}
+        if blockItems[i] ==nil then 
+            blockItems[i] ={}
         end
         for j=1,7,1 do
-            if blocks[i][j] ==nil then
-                blocks[i][j] ={}
+            if blockItems[i][j] ==nil then
+                blockItems[i][j] ={}
             end
-            local block = GameObject.Instantiate(Obj, board);
-            blocks[i][j].block = block
-            block.gameObject:SetActive(true)
-            block.transform.localPosition = Vector3(shiftX+(i-1)*space, shiftY-(j-1)*space, 0)
-            blocks[i][j].type = math.random(6)
-            blocks[i][j].image = blocks[i][j].block.transform:Find("icon")
-            blocks[i][j].image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[blocks[i][j].type]
-            -- block:GetComponent(BoardBlock).x = -1
-            -- block:GetComponent(BoardBlock).y = -1
-            -- block:GetComponent(BoardBlock).type = blocks[i][j].type
-            block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(Click)
+            -- local block = GameObject.Instantiate(Obj, board)
+            -- blockItems[i][j].block = block
+            -- block.gameObject:SetActive(true)
+            -- block.transform.localPosition = Vector3(shiftX+(i-1)*space, shiftY-(j-1)*space, 0)
+            -- blockItems[i][j].type = math.random(6)
+            -- blockItems[i][j].image = blockItems[i][j].block.transform:Find("icon")
+            -- blockItems[i][j].image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[blockItems[i][j].type]
+            -- -- block:GetComponent(BoardBlock).x = -1
+            -- -- block:GetComponent(BoardBlock).y = -1
+            -- -- block:GetComponent(BoardBlock).type = blockItems[i][j].type
+            -- block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(Click)
+                blockItem = BlockItem:new(i,j,math.random(6))
+                blockItem.block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
+                    function()
+                        Click(blockItem)
+                    end
+                )
+                blockItems[i][j].blockItem = blockItem
         end
     end
-    -- local block = Block:new(1,2,3)
-    -- Debug.Log(block.type)
+    -- local block = BlockItem:new(1,2,3)
 end
 
 function XXL:Update()
@@ -57,8 +63,11 @@ function LoadSprites()
     end
 end
 
-function Click()
-    Debug.Log("Click")
+function Click(blockItem)
+    -- Debug.Log("i = "..blockItem.i..",j = "..blockItem.j..",type = "..blockItem.blockType)
+    -- Debug.Log("Click")
+    Debug.Log(blockItem)
+    Debug.Log(blockItem.blockType)
 end
 
 return XXL

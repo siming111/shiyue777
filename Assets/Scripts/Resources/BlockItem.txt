@@ -1,13 +1,42 @@
-local Block = Block or {}
+local BlockItem = BlockItem or {}
 
+local space = 126
+local shiftX = 87
+local shiftY = -142
+local board = GameObject.Find("Canvas/GuildCrushWindow/Down/Board").transform
+local Obj = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Block").transform
+local sprites = {}
 
-function Block:new()
+function BlockItem:new(i,j,blockType)
     local o = o or {}
-    setmetatable( o, { __index = self }) 
-    -- self.i = i
-    -- self.j = j
-    -- self.type = type
-    return o   
+    setmetatable( o, { __index = self })
+    o.i = i
+    o.j = j
+    o.blockType = blockType
+    o.block =  GameObject.Instantiate(Obj, board)
+    o.block.gameObject:SetActive(true)
+    o.block.transform.localPosition = Vector3(shiftX+(i-1)*space, shiftY-(j-1)*space, 0)
+    image = o.block.transform:Find("icon")
+    image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[blockType]
+    -- self.block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
+    --     function()
+    --         Click(self)
+    --     end
+    -- )
+    return o
 end
 
-return Block
+function LoadSprites()
+    for i = 1,6,1 do
+        -- Textures/Crush/Icon
+        sprites[i] = Resources.Load("Textures/Crush/Icon"..i,Sprite)
+        -- sprites[i] = Resources.Load("Textures/7Tex/Icon","Icon_"..i,Sprite)
+    end
+end
+
+-- function Click(s)
+--     Debug.Log("i = "..s.i..",j = "..s.j..",type = "..s.type)
+-- end
+
+LoadSprites()
+return BlockItem
