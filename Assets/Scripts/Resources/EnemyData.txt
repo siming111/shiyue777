@@ -4,7 +4,7 @@
 ]]
 local EnemyData ={
     Power = 25      --攻击力
-    ,FightRound = 3 --攻击回合
+    ,FightRound = 5 --攻击回合
     ,HP  =  100     --血量
 }
 return EnemyData

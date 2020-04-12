@@ -1,3 +1,7 @@
+--[[
+    @desc: 控制战斗界面
+    @author:yxy
+]]
 local TopFightPanel = TopFightPanel or {}
 function TopFightPanel:new()
     o = o or {}
@@ -6,25 +10,46 @@ function TopFightPanel:new()
 end
 
 function TopFightPanel:Init()
+    EventSystem:GetInstance():init()
+    EventSystem:GetInstance():AddListener("Hello",function()  self:UpdateRound() end)
+    local EventName  = EventSystem:GetInstance().EventName
+
     --获得当前关卡
     local level = 1
+    --生成关卡数据
+    self:InitData(level)
+    --生成Panel
     self:InitPanel()
     Debug.Log(" TopFightPanel:Init")
 
-
-
-    self:InitData(level)
-    -- UpPanel.transform.sizeDelta = UnityEngine.Vector2(50, 50)
-    
-    -- local UpContainer = GuildCrushWindow:GetComponent(UnityEngine.UI.Button)
-    -- RectTransform (UnityEngine.RectTransform)
 end
-function TopFightPanel:InitPanel()
-    local GuildCrushWindow = GameObject.Find("GuildCrushWindow")
-    local TopPanel = GameObject.Find("GuildCrushWindow/TopPanel")
-    local BossImage = GameObject.Find("GuildCrushWindow/TopPanel/Boss")
-    local AttackCountDown_text = GameObject.Find("GuildCrushWindow/TopPanel/Boss/AttackCountDown_text")
-end
+
 function TopFightPanel:InitData()
+    self.EnemyData = {}
+    self.PlayerData= {}
+    self.RoundData = {}  --这个是消消乐每回合传递过来的数据
+    self.EnemyData = require "EnemyData"
+    self.PlayerData= require "PlayerData"
+end
+
+function TopFightPanel:InitPanel()
+    --怪物倒计回合
+    local AttackCountDown_text = GameObject.Find("GuildCrushWindow/TopPanel/Boss/AttackCountDown/AttackCountDown_text"):GetComponent(Text)
+    AttackCountDown_text.text = self.EnemyData.FightRound
+    
+    local Hp_text     = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Hp_text"):GetComponent(Text)
+    local Energy_text = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Energy_text"):GetComponent(Text)
+    local Shield_text = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Shield_text"):GetComponent(Text)
+    local Level_text  = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Shield_text"):GetComponent(Text)
+
+    Hp_text.text    = self.PlayerData.HP_cur    .. "/" .. self.PlayerData.Hp_total
+    Energy_text.text= self.PlayerData.Energy_cur.. "/" .. self.PlayerData.Energy_total
+    Shield_text.text= self.PlayerData.Shield_cur.. "/" .. self.PlayerData.Shield_total
+    Level_text.text = 
+end
+
+--更新回合数据（通过事件访问）
+function TopFightPanel:UpdateRound()
+    Debug.Log("执行UpdateRound")
 end
 return TopFightPanel

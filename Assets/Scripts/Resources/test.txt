@@ -2,6 +2,7 @@ import "UnityEngine"
 import "UnityEngine.UI"
 -- import "System.Collections";
 -- import "System.Collections.Generic";
+require "EventSystem"
 local _XXL = require "XXL"
 local _Top = require "TopFightPanel"
 local x = _XXL:new()
@@ -14,7 +15,10 @@ function Awake()
     x:Hello()
     local TopFightPanel = _Top:new()
     TopFightPanel:Init()
+    
+    -- EventSystem:GetInstance():Fire("Hello")
     -- local cube2 =  cubeInstance:new()
+
 end
 
 function Update()

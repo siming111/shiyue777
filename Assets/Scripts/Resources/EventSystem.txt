@@ -1,0 +1,43 @@
+--[[
+    @desc: 全局事件机制
+    @author:yxy
+]]
+--全局的事件机制
+EventSystem = EventSystem or {}
+EventName ={}
+
+
+function EventSystem:GetInstance()
+    if EventSystem.Instance then
+        return EventSystem.Instance
+    end
+    EventSystem.Instance = self
+    return EventSystem.Instance
+end 
+
+function EventSystem:init()
+    setmetatable(EventName,self)
+    self.__index =self
+    self.__call = self:Fire()
+end
+
+--添加事件
+function EventSystem:AddListener(event_name , event_func)
+    for i,v in pairs(EventName) do 
+        if i == event_name then 
+           table.insert(EventName[i],event_func)
+        end
+    end
+    EventName[event_name] = {}
+    table.insert(EventName[event_name],event_func)
+end
+
+function EventSystem:Fire(event_name)
+    for i,v in pairs(EventName) do 
+        if i == event_name then
+            for index ,value in pairs(v) do 
+                value()
+            end
+        end
+    end
+end
