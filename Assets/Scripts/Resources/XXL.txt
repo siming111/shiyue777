@@ -3,6 +3,7 @@ local XXL = XXL or {}
 local BlockItem = require "BlockItem"
 
 time = 0.5--砖块下落时间
+typeNumber = 4
 blockItems = {}
 clickBlocks = {}
 positionTable = {}
@@ -17,7 +18,7 @@ function XXL:Hello()
     for i=1,7,1 do
         blockItems[i] ={}
         for j=1,9,1 do
-            local blockItem = BlockItem:new(i,j,math.random(6))
+            local blockItem = BlockItem:new(i,j,math.random(typeNumber))
             local btn = blockItem.block
             blockItems[i][j] = blockItem
             btn:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
@@ -48,18 +49,18 @@ function XXL:Update()
 end
 
 function XXL:MoveBlock(block,i,j)--移动砖块到指定位置，并更新住砖块内容坐标
-    Debug.Log("砖块(i="..block.i..",j="..block.j..")移动到("..i..","..j..")上")
+    -- Debug.Log("砖块(i="..block.i..",j="..block.j..")移动到("..i..","..j..")上")
     block.i = i
     block.j = j
     blockItems[i][j] = block
 end
 
 function XXL:SayHello()
-    Debug.Log("hello!!!!!!!!!!!!!!!!!!!!!")
+    -- Debug.Log("hello!!!!!!!!!!!!!!!!!!!!!")
 end
 
 function XXL:ExchangeBlcok(block1,block2)--交换砖块
-    Debug.Log("砖块(i="..block1.i..",j="..block1.j..")与砖块(i="..block2.i..",j="..block2.j..")交换")
+    -- Debug.Log("砖块(i="..block1.i..",j="..block1.j..")与砖块(i="..block2.i..",j="..block2.j..")交换")
     local i1 = block1.i
     local j1 = block1.j
     local i2 = block2.i
@@ -71,7 +72,7 @@ end
 function XXL:Click(blockItem)
     local i = blockItem.i
     local j = blockItem.j
-    Debug.Log("i="..i..",j="..j..",t="..blockItems[i][j].blockType)
+    -- Debug.Log("i="..i..",j="..j..",t="..blockItems[i][j].blockType)
     if(clickBlocks.firstBlock == nil)--如果第一个元素为空
     then
         clickBlocks.firstBlock = blockItems[i][j]
@@ -155,7 +156,7 @@ function XXL:Fall()--砖块掉落
             end
         end
         for i = 1,empty,1 do
-            local blockItem = BlockItem:new(1-i,j,math.random(6))
+            local blockItem = BlockItem:new(1-i,j,math.random(typeNumber))
             LeanTween.move(blockItem.block,positionTable[1-i+empty][j],time)
             XXL:MoveBlock(blockItem,1-i+empty,j)
             blockItem.block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
@@ -175,21 +176,21 @@ function XXL:DestroyBlock(blockItem)
 end
 
 function XXL:IsOK()
+    local FightDate = {}
     local clearBlocks = {}
     local OK = false
     for i=1,7,1 do--初始化清除表
         clearBlocks[i] ={}
-        -- for j=1,9,1 do
-        --     clearBlocks[i][j] = nil
-        -- end
     end
     for i=1,7,1 do--横向检测
         for j=1,7,1 do
-            -- Debug.Log("hello")
             if(blockItems[i][j].blockType==blockItems[i][j+1].blockType and 
                 blockItems[i][j].blockType==blockItems[i][j+2].blockType)--成功检测到消除
             then 
                 OK = true
+                -- table.insert(FightDate,blockItems[i][j].blockType)
+                -- Debug.Log(blockItems[i][j].blockType.."?????????")
+                FightDate[#FightDate+1] = blockItems[i][j].blockType
                 clearBlocks[i][j] = blockItems[i][j]
                 clearBlocks[i][j+1] = blockItems[i][j+1]
                 clearBlocks[i][j+2] = blockItems[i][j+2]
@@ -202,20 +203,29 @@ function XXL:IsOK()
                 blockItems[i][j].blockType==blockItems[i+2][j].blockType)--成功检测到消除
             then 
                 OK = true
+                -- table.insert(FightDate,blockItems[i][j].blockType)
+                -- Debug.Log(blockItems[i][j].blockType.."?????????")
+                FightDate[#FightDate+1] = blockItems[i][j].blockType
                 clearBlocks[i][j] = blockItems[i][j]
                 clearBlocks[i+1][j] = blockItems[i+1][j]
                 clearBlocks[i+2][j] = blockItems[i+2][j]
             end
         end
     end
-    if(OK)then
-        Debug.Log("OK=true")
-    else
-        Debug.Log("OK=false")
+    -- if(OK)then
+    --     -- Debug.Log("OK=true")
+    -- else
+    --     Debug.Log("OK=false")
+    -- end
+    Debug.Log(#FightDate.."-------------------------------")
+    for i,v in pairs(FightDate) do 
+        Debug.Log("第".. i .. "个元素的  BlockType为  ".. v)
     end
+
     if(OK==true)then
         return clearBlocks
     end
+    
     return nil
     -- if(OK == true)
     -- then 
