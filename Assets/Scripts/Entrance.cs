@@ -30,6 +30,7 @@ public class Entrance : MonoBehaviour
     void Update()
     {
         //updateFunction.call();
+        LTDescr ltdescr = new LTDescr();
     }
 
     // SLua Loader代理方法

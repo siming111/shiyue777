@@ -2,6 +2,7 @@
 local XXL = XXL or {}
 local BlockItem = require "BlockItem"
 
+time = 1--砖块下落时间
 blockItems = {}
 clickBlocks = {}
 positionTable = {}
@@ -17,13 +18,11 @@ function XXL:Hello()
         blockItems[i] ={}
         for j=1,9,1 do
             local blockItem = BlockItem:new(i,j,math.random(6))
-            local i = blockItem.i
-            local j = blockItem.j
             local btn = blockItem.block
             blockItems[i][j] = blockItem
             btn:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
                 function()
-                    XXL:Click(i,j)
+                    XXL:Click(blockItem)
                 end
             )
         end
@@ -69,7 +68,9 @@ function XXL:ExchangeBlcok(block1,block2)--交换砖块
     XXL:MoveBlock(block2,i1,j1)
 end
 
-function XXL:Click(i,j)
+function XXL:Click(blockItem)
+    local i = blockItem.i
+    local j = blockItem.j
     Debug.Log("i="..i..",j="..j..",t="..blockItems[i][j].blockType)
     if(clickBlocks.firstBlock == nil)--如果第一个元素为空
     then
@@ -82,15 +83,22 @@ function XXL:Click(i,j)
             if(true)--两个砖块是否相邻
             then
             clickBlocks.secondBlock = blockItems[i][j]
-            LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], 1)
-            LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], 1):setOnComplete(
+            LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], time)
+            LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time):setOnComplete(
                 function()
-                    XXL:Judge()--砖块发生移动会
+                    if(XXL:Judge())then
+                        XXL:Fall()--砖块掉落
+
+                    else
+                        LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], time)
+                        LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time)
+                        XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
+                    end
+                        clickBlocks.firstBlock = nil
+                        clickBlocks.secondBlock = nil
                 end
             )
             XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
-            clickBlocks.firstBlock = nil
-            clickBlocks.secondBlock = nil
             XXL:Show()
             -- XXL:Judge()
             -- Debug.Log("clearBlock = "..#clearBlocks)
@@ -105,34 +113,50 @@ end
 
 function XXL:Judge()
     local clearBlocks = XXL:IsOK()
-    for key, value in pairs(clearBlocks) do  
-        for key1, value1 in pairs(value) do
-            XXL:DestroyBlock(value1)
+    if(clearBlocks)then
+    -- if(clearBlocks)then
+    --     return false
+    -- else
+        for key, value in pairs(clearBlocks) do  
+            for key1, value1 in pairs(value) do
+                XXL:DestroyBlock(value1)
+            end
         end
+        return true
+    else
+        return false
     end
-    XXL:Show()
-    XXL:SayHello()
-    XXL:Fall()
+        -- return true
+    -- end
+    -- XXL:Show()
+    -- XXL:SayHello()
 end
 
 function XXL:Fall()--砖块掉落
+    flag = true--是否添加动画结束事件标签
     for j=1,9,1 do
         local empty = 0
         for i=7,1,-1 do
             if(blockItems[i][j]==nil)then
                 empty = empty + 1
             else
-                LeanTween.move(blockItems[i][j].block,positionTable[blockItems[i][j].i+empty][blockItems[i][j].j],1)
+                LeanTween.move(blockItems[i][j].block,positionTable[blockItems[i][j].i+empty][blockItems[i][j].j],time)
                 XXL:MoveBlock(blockItems[i][j],blockItems[i][j].i+empty,blockItems[i][j].j)
             end
         end
         for i = 1,empty,1 do
             local blockItem = BlockItem:new(1-i,j,math.random(6))
-            LeanTween.move(blockItem.block,positionTable[1-i+empty][j],1)
+            LeanTween.move(blockItem.block,positionTable[1-i+empty][j],time)
             XXL:MoveBlock(blockItem,1-i+empty,j)
+            blockItem.block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
+                function()
+                    XXL:Click(blockItem)
+                end
+            )
         end
     end
     XXL:Show()
+    -- LeanTween.move(nil,nil,2).setOnComplete(XXL:SayHello())
 end
 
 function XXL:DestroyBlock(blockItem)
