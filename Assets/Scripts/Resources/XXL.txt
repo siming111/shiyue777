@@ -3,6 +3,7 @@ local XXL = XXL or {}
 local BlockItem = require "BlockItem"
 
 blockItems = {}
+clickBlocks = {}
 
 function XXL:new()
     local o = {}
@@ -14,49 +15,137 @@ function XXL:Hello()
     local space = 126
     local shiftX = 87
     local shiftY = -142
-    for i=1,9,1 do
+    for i=1,7,1 do
         blockItems[i] ={}
-        for j=1,7,1 do
+        for j=1,9,1 do
             local blockItem = BlockItem:new(i,j,math.random(6))
-            print("blockItem", blockItem)
             local i = blockItem.i
             local j = blockItem.j
-            local blockType = blockItem.blockType
             local btn = blockItem.block
             blockItems[i][j] = blockItem
-            --print("dddd" .. blockType)
-            -- btn:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
-            --     function()
-            --         Debug.Log("i="..i..",j="..j)
-            --         XXL:Click(i,j,blockType)
-            --         -- Debug.Log(blockItem:function())
-            --     end
-            -- )
+            btn:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
+                function()
+                    XXL:Click(i,j)
+                end
+            )
         end
     end
-    -- XXL:Show()
+    XXL:Show()
 end
 
 function XXL:Update()
-    Debug.Log("lengthX="..#blockItems.."lengthY="..#blockItems[1])
+    -- Debug.Log("lengthX="..#blockItems.."lengthY="..#blockItems[1])
 end
 
-function XXL:Click(i,j,blockType)
-    -- Debug.Log("i="..i..",j="..j)
-    -- Debug.Log("length="..#blockItems[i])
-    Debug.Log(blockItems[i][j])
-    print("blockType=" .. blockType)
-    Debug.Log(blockItems[i][j].blockType)
-    -- Debug.Log(blockType)
-    -- Debug.Log(i..j)
+
+function XXL:MoveBlock(block,i,j)--移动砖块到指定位置，并更新住砖块内容坐标
+    Debug.Log("砖块(i="..block.i..",j="..block.j..")移动到("..i..","..j..")上")
+    block.i = i
+    block.j = j
+    blockItems[i][j] = block
 end
 
--- function XXL:Show()
---     for i=1,9,1 do
---         for j=1,7,1 do
---             Debug.Log("[i"..blockItems[i][j].i.."j"..blockItems[i][j].j.."t"..blockItems[i][j].blockType.."]   ")
---         end
---     end
--- end
+function XXL:ExchangeBlcok(block1,block2)--交换砖块
+    Debug.Log("砖块(i="..block1.i..",j="..block1.j..")与砖块(i="..block2.i..",j="..block2.j..")交换")
+    local i1 = block1.i
+    local j1 = block1.j
+    local i2 = block2.i
+    local j2 = block2.j
+    XXL:MoveBlock(block1,i2,j2)
+    XXL:MoveBlock(block2,i1,j1)
+end
+
+function XXL:Click(i,j)
+    Debug.Log("i="..i..",j="..j..",t="..blockItems[i][j].blockType)
+    if(clickBlocks.firstBlock == nil)--如果第一个元素为空
+    then
+        clickBlocks.firstBlock = blockItems[i][j]
+    else
+        if(clickBlocks.firstBlock == blockItems[i][j])--如果点击的物体与第一个存放的物体相同
+        then
+            clickBlocks.firstBlock = nil
+        else
+            if(true)--两个砖块是否相邻
+            then
+            clickBlocks.secondBlock = blockItems[i][j]
+            XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
+            local clearBlocks = XXL:IsOK()
+            for key, value in pairs(clearBlocks) do  
+                for key1, value1 in pairs(value) do
+                    GameObject.Destroy(value1.block.gameObject)
+                    Debug.Log("i="..value1.i..",j="..value1.j)
+                end
+            end
+            -- Debug.Log("clearBlock = "..#clearBlocks)
+            else
+            end
+        end
+    end
+    XXL:Show()
+    -- Debug.Log("first:i="..clickBlocks.firstBlock.i..",j="..clickBlocks.firstBlock.j)
+end
+
+
+function XXL:IsOK()
+    local clearBlocks = {}
+    local OK = false
+    for i=1,7,1 do--初始化清除表
+        clearBlocks[i] ={}
+        -- for j=1,9,1 do
+        --     clearBlocks[i][j] = nil
+        -- end
+    end
+    for i=1,7,1 do--横向检测
+        for j=1,7,1 do
+            -- Debug.Log("hello")
+            if(blockItems[i][j].blockType==blockItems[i][j+1].blockType and 
+                blockItems[i][j].blockType==blockItems[i][j+2].blockType)--成功检测到消除
+            then 
+                OK = true
+                clearBlocks[i][j] = blockItems[i][j]
+                clearBlocks[i][j+1] = blockItems[i][j+1]
+                clearBlocks[i][j+2] = blockItems[i][j+2]
+            end
+        end
+    end
+    for i=1,5,1 do--纵向检测
+        for j=1,9,1 do
+            if(blockItems[i][j].blockType==blockItems[i+1][j].blockType and 
+                blockItems[i][j].blockType==blockItems[i+2][j].blockType)--成功检测到消除
+            then 
+                OK = true
+                clearBlocks[i][j] = blockItems[i][j]
+                clearBlocks[i+1][j] = blockItems[i+1][j]
+                clearBlocks[i+2][j] = blockItems[i+2][j]
+            end
+        end
+    end
+    if(OK)then
+        Debug.Log("OK=true")
+    else
+        Debug.Log("OK=false")
+    end
+    if(OK==true)then
+        return clearBlocks
+    end
+    return nil
+    -- if(OK == true)
+    -- then 
+    --     return clearBlock
+    -- else 
+    --     return nil
+    -- end
+end
+
+function XXL:Show()
+    s = ""
+    for i=1,7,1 do
+        for j=1,9,1 do
+            s = s.."(i"..blockItems[i][j].i.."j"..blockItems[i][j].j.."t"..blockItems[i][j].blockType..") "
+        end
+        s = s.."\n"
+    end
+    print(s)
+end
 
 return XXL
