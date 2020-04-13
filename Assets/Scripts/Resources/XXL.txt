@@ -2,7 +2,7 @@
 local XXL = XXL or {}
 local BlockItem = require "BlockItem"
 
-time = 1--砖块下落时间
+time = 0.5--砖块下落时间
 blockItems = {}
 clickBlocks = {}
 positionTable = {}
@@ -140,7 +140,17 @@ function XXL:Fall()--砖块掉落
             if(blockItems[i][j]==nil)then
                 empty = empty + 1
             else
-                LeanTween.move(blockItems[i][j].block,positionTable[blockItems[i][j].i+empty][blockItems[i][j].j],time)
+                lt = LeanTween.move(blockItems[i][j].block,positionTable[blockItems[i][j].i+empty][blockItems[i][j].j],time)
+                if(flag)then
+                    lt:setOnComplete(
+                        function()
+                            if(XXL:Judge())then
+                                XXL:Fall()
+                            end
+                        end
+                    )
+                    flag = false
+                end
                 XXL:MoveBlock(blockItems[i][j],blockItems[i][j].i+empty,blockItems[i][j].j)
             end
         end
