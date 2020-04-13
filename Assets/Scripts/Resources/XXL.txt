@@ -69,13 +69,19 @@ function XXL:ExchangeBlcok(block1,block2)--交换砖块
     XXL:MoveBlock(block2,i1,j1)
 end
 
+-- function XXL:SelectBLock(block)
+--     clickBlocks.firstBlock = block
+--     block.selectImage.gameObject:SetActive(true)
+-- end
+
 function XXL:Click(blockItem)
     local i = blockItem.i
     local j = blockItem.j
-    -- Debug.Log("i="..i..",j="..j..",t="..blockItems[i][j].blockType)
+    Debug.Log("i="..i..",j="..j..",t="..blockItems[i][j].blockType)
     if(clickBlocks.firstBlock == nil)--如果第一个元素为空
     then
-        clickBlocks.firstBlock = blockItems[i][j]
+        -- XXL:SelectBLock(blockItem)
+        clickBlocks.firstBlock = blockItem
     else
         if(clickBlocks.firstBlock == blockItems[i][j])--如果点击的物体与第一个存放的物体相同
         then
@@ -176,7 +182,7 @@ function XXL:DestroyBlock(blockItem)
 end
 
 function XXL:IsOK()
-    local FightDate = {}
+    self.fightData = {}
     local clearBlocks = {}
     local OK = false
     for i=1,7,1 do--初始化清除表
@@ -188,9 +194,9 @@ function XXL:IsOK()
                 blockItems[i][j].blockType==blockItems[i][j+2].blockType)--成功检测到消除
             then 
                 OK = true
-                -- table.insert(FightDate,blockItems[i][j].blockType)
+                -- table.insert(fightData,blockItems[i][j].blockType)
                 -- Debug.Log(blockItems[i][j].blockType.."?????????")
-                FightDate[#FightDate+1] = blockItems[i][j].blockType
+                self.fightData[#self.fightData+1] = blockItems[i][j].blockType
                 clearBlocks[i][j] = blockItems[i][j]
                 clearBlocks[i][j+1] = blockItems[i][j+1]
                 clearBlocks[i][j+2] = blockItems[i][j+2]
@@ -203,9 +209,9 @@ function XXL:IsOK()
                 blockItems[i][j].blockType==blockItems[i+2][j].blockType)--成功检测到消除
             then 
                 OK = true
-                -- table.insert(FightDate,blockItems[i][j].blockType)
+                -- table.insert(fightData,blockItems[i][j].blockType)
                 -- Debug.Log(blockItems[i][j].blockType.."?????????")
-                FightDate[#FightDate+1] = blockItems[i][j].blockType
+                self.fightData[#self.fightData+1] = blockItems[i][j].blockType
                 clearBlocks[i][j] = blockItems[i][j]
                 clearBlocks[i+1][j] = blockItems[i+1][j]
                 clearBlocks[i+2][j] = blockItems[i+2][j]
@@ -217,8 +223,8 @@ function XXL:IsOK()
     -- else
     --     Debug.Log("OK=false")
     -- end
-    Debug.Log(#FightDate.."-------------------------------")
-    for i,v in pairs(FightDate) do 
+    Debug.Log(#self.fightData.."-------------------------------")
+    for i,v in pairs(self.fightData) do 
         Debug.Log("第".. i .. "个元素的  BlockType为  ".. v)
     end
 
