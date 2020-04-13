@@ -1,5 +1,6 @@
 import "UnityEngine"
 import "UnityEngine.UI"
+UnityEngine.Time.fixedDeltaTime = 0.1
 -- import "System.Collections";
 -- import "System.Collections.Generic";
 require "EventSystem"
@@ -8,17 +9,10 @@ local _Top = require "TopFightPanel"
 local x = _XXL:new()
 
 function Awake()
-    -- body
-    -- print "hello lua"
-    -- print("Lua创建了一个Cube")
-    -- Debug.Log("SSSSSSSS")
-    x:Hello()
     local TopFightPanel = _Top:new()
     TopFightPanel:Init()
-    
+    x:Hello()
     -- EventSystem:GetInstance():Fire("Hello")
-    -- local cube2 =  cubeInstance:new()
-
 end
 
 function Update()

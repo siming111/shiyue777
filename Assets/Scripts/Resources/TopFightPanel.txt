@@ -2,6 +2,7 @@
     @desc: 控制战斗界面
     @author:yxy
 ]]
+UnityEngine.Time.fixedDeltaTime = 0.1
 local TopFightPanel = TopFightPanel or {}
 function TopFightPanel:new()
     o = o or {}
@@ -21,7 +22,6 @@ function TopFightPanel:Init()
     --生成Panel
     self:InitPanel()
     Debug.Log(" TopFightPanel:Init")
-
 end
 
 function TopFightPanel:InitData()
@@ -33,23 +33,31 @@ function TopFightPanel:InitData()
 end
 
 function TopFightPanel:InitPanel()
+    --获得组件
+    self.Player = GameObject.Find("GuildCrushWindow/TopPanel/Player")
+    self.Boss   = GameObject.Find("GuildCrushWindow/TopPanel/Boss")
     --怪物倒计回合
     local AttackCountDown_text = GameObject.Find("GuildCrushWindow/TopPanel/Boss/AttackCountDown/AttackCountDown_text"):GetComponent(Text)
     AttackCountDown_text.text = self.EnemyData.FightRound
     
-    local Hp_text     = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Hp_text"):GetComponent(Text)
-    local Energy_text = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Energy_text"):GetComponent(Text)
-    local Shield_text = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Shield_text"):GetComponent(Text)
-    local Level_text  = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Shield_text"):GetComponent(Text)
+    self.Hp_text     = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Hp_text"):GetComponent(Text)
+    self.Energy_text = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Energy_text"):GetComponent(Text)
+    self.Shield_text = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Shield_text"):GetComponent(Text)
+    self.Level_text  = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Shield_text"):GetComponent(Text)
 
-    Hp_text.text    = self.PlayerData.HP_cur    .. "/" .. self.PlayerData.Hp_total
-    Energy_text.text= self.PlayerData.Energy_cur.. "/" .. self.PlayerData.Energy_total
-    Shield_text.text= self.PlayerData.Shield_cur.. "/" .. self.PlayerData.Shield_total
-    Level_text.text = 
+    self.Hp_text.text    = self.PlayerData.HP_cur    .. "/" .. self.PlayerData.Hp_total
+    self.Energy_text.text= self.PlayerData.Energy_cur.. "/" .. self.PlayerData.Energy_total
+    self.Shield_text.text= self.PlayerData.Shield_cur.. "/" .. self.PlayerData.Shield_total
+    self.Level_text.text = 1
+    PlayerMove()
 end
 
 --更新回合数据（通过事件访问）
 function TopFightPanel:UpdateRound()
     Debug.Log("执行UpdateRound")
+end
+
+function PlayerMove()
+    local offset = Vector3(0,0,1)
 end
 return TopFightPanel
