@@ -17,8 +17,8 @@ function Awake()
        ,[2] = {type = 2 , times = 1} --回盾
        ,[3] = {type = 3 , times = 1} --加能量
        ,[4] = {type = 4 , times = 1} --攻击
-   }
-    EventSystem:GetInstance():Fire("Hello",data)
+    }
+    TopFightPanel:GetInstance():UpdateRound(data)
 end
 
 function Update()

@@ -32,17 +32,23 @@ function TopFightPanel:InitData()
     self.PlayerData= require "PlayerData"
 end
 
+function TopFightPanel:GetInstance()
+    if TopFightPanel.Instance then
+        return TopFightPanel.Instance
+    end
+    TopFightPanel.Instance = self
+    return TopFightPanel.Instance
+end
 function TopFightPanel:InitPanel()
-    --获得组件
+    --玩家获得组件
     self.C_Player= GameObject.Find("GuildCrushWindow/TopPanel/C_Player")
-    self.Player  = GameObject.Find("GuildCrushWindow/TopPanel/C_Player/Player")
     self.Boss    = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/Boss")
-    self.FireBall= GameObject.Find("GuildCrushWindow/TopPanel/C_Player/fireball")
-    self.hitImage= GameObject.Find("GuildCrushWindow/TopPanel/C_Player/fireball/hitImage")
-    self.hp      = GameObject.Find("GuildCrushWindow/TopPanel/C_Player/Hp")
-    self.FireBallImage = GameObject.Find("GuildCrushWindow/TopPanel/C_Player/fireball/fireballImage")
-    -- self.hpAddImage    = GameObject.Find("GuildCrushWindow/TopPanel/C_Player/Hp/hpAddImage")
-    self.hpAddText     = GameObject.Find("GuildCrushWindow/TopPanel/C_Player/Hp/hpAddText"):GetComponent(Text)
+    self.FireBall =self.C_Player.transform:Find("fireball").gameObject
+    self.Player  = self.C_Player.transform:Find("Player").gameObject
+    self.hp      = self.C_Player.transform:Find("Hp").gameObject
+    self.hitImage= self.FireBall.transform:Find("hitImage").gameObject
+    self.FireBallImage = self.FireBall.transform:Find("fireballImage").gameObject
+    self.hpAddText     = self.hp.transform:Find("hpAddText").gameObject:GetComponent(Text)
 
     self.Playerrect  = self.Player.transform
     self.FireBallrect= self.FireBall.transform
@@ -52,28 +58,36 @@ function TopFightPanel:InitPanel()
     self.FireBallImage:SetActive(false)
     self.hp:SetActive(false)
 
-    --怪物倒计回合
-    local AttackCountDown_text = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/AttackCountDown_text"):GetComponent(Text)
-    AttackCountDown_text.text = self.EnemyData.FightRound
+    --怪物相关
+    self.AttackCountDown_text = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/AttackCountDown_text"):GetComponent(Text)
+    self.AttackCountDown_text.text = self.EnemyData.FightRound_cur
     
     --UI
-    self.Hp_text     = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Hp_text"):GetComponent(Text)
-    self.Energy_text = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Energy_text"):GetComponent(Text)
-    self.Shield_text = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Shield_text"):GetComponent(Text)
-    self.Level_text  = GameObject.Find("GuildCrushWindow/TopPanel/UIState/Level_text/Level_text (1)"):GetComponent(Text)
+    self.UIState     = GameObject.Find("GuildCrushWindow/TopPanel/UIState")
+    self.Hp_text     = self.UIState.transform:Find("Hp_text").gameObject:GetComponent(Text)
+    self.Energy_text = self.UIState.transform:Find("Energy_text").gameObject:GetComponent(Text)
+    self.Shield_text = self.UIState.transform:Find("Shield_text").gameObject:GetComponent(Text)
+    self.Level_text  = self.UIState.transform:Find("Level_text/Level_text (1)").gameObject:GetComponent(Text)
+    
+    --怪物相关组件
+    self.BossHpBar = self.UIState.transform:Find("BossHpBg/BossHpBar").gameObject:GetComponent(Image)
+    self.BossHpLoad= self.UIState.transform:Find("BossHpBg/BossHpLoad").gameObject:GetComponent(Image)
+    self.BossHpText= self.UIState.transform:Find("BossHpBg/BossHpText").gameObject:GetComponent(Text)
+    self.BossHpText.text = self.EnemyData.Hp_cur     .. "/" .. self.EnemyData.Hp_total
+    self.BossHpBar.fillAmount = self.EnemyData.Hp_cur/self.EnemyData.Hp_total
 
     self.Hp_text.text    = self.PlayerData.HP_cur    .. "/" .. self.PlayerData.Hp_total
     self.Energy_text.text= self.PlayerData.Energy_cur.. "/" .. self.PlayerData.Energy_total
     self.Shield_text.text= self.PlayerData.Shield_cur.. "/" .. self.PlayerData.Shield_total
     self.Level_text.text = 1
 
-    local data = {
-         [1] = {type = 1 , times = 1} --回血
-        ,[2] = {type = 2 , times = 1} --回盾
-        ,[3] = {type = 3 , times = 1} --加能量
-        ,[4] = {type = 4 , times = 1} --攻击
-    }
-    self:UpdateRound(data) --假设现在传进来一个数据
+    -- local data = {
+    --      [1] = {type = 1 , times = 1} --回血
+    --     ,[2] = {type = 2 , times = 1} --回盾
+    --     ,[3] = {type = 3 , times = 1} --加能量
+    --     ,[4] = {type = 4 , times = 1} --攻击
+    -- }
+    -- self:UpdateRound(data) --假设现在传进来一个数据
 
     -- 测试专用
     -- LuaTimer.Add(10000,function() 
@@ -178,7 +192,6 @@ function TopFightPanel:AttackEnemy()
         Debug.LogError("为调用Update就移动，违法")
     end
     self.playerMoveCur = self.playerMoveCur + 1 
-
     --攻击展示结束
     if self.playerMoveCur ==self.playerMoveCount then 
         self.playerMoveCur =  0  --玩家移动的计时清空
@@ -186,10 +199,11 @@ function TopFightPanel:AttackEnemy()
             LuaTimer.Delete(self.player_AttackTimer)
             --玩家返回
             self.BossAnim:SetBool("GetHit",true)
+            --怪物收到攻击逻辑处理
+            self:EnemyGetHit()
             self.FireBallImage:SetActive(false)
             self.hitImage:SetActive(true)
             LuaTimer.Add(1000,function()
-            --怪物收到攻击逻辑处理
                 self.BossAnim:SetBool("GetHit",false) 
             end)
             LuaTimer.Add(100,function()
@@ -204,6 +218,47 @@ function TopFightPanel:AttackEnemy()
 end
 
 function TopFightPanel:EnemyGetHit()
+    --怪物扣血
+    self.EnemyData.Hp_cur = self.EnemyData.Hp_cur - self.PlayerData.Power
+    --判断它是否死亡
+    if self.EnemyData.Hp_cur == 0 then
+        --怪物死亡逻辑
+        LuaTimer.Add(150,function ()
+            self:ShowWin()
+        end)
+    end
 
+    self.BossHpText.text = self.EnemyData.Hp_cur     .. "/" .. self.EnemyData.Hp_total
+    self.BossHpBar.fillAmount = self.EnemyData.Hp_cur/self.EnemyData.Hp_total
+    self._enemyHpLoading = LuaTimer.Add(0,100,function()
+        self:EnemyHpLoading()
+   end)
+end
+function TopFightPanel:EnemyHpLoading()
+    self.BossHpLoad.fillAmount = self.BossHpLoad.fillAmount - 0.02
+    if self.BossHpLoad.fillAmount <= self.BossHpBar.fillAmount then
+        if self._enemyHpLoading then  
+            --怪物扣完血之后,开始怪物的回合
+            LuaTimer.Add(200,function()
+                self:EnemyRound()
+            end)
+            LuaTimer.Delete(self._enemyHpLoading)
+            self._enemyHpLoading = nil 
+        end
+    end
+end
+function TopFightPanel:ShowWin()
+    Debug.LogError("你赢了")
+
+end
+function TopFightPanel:EnemyRound()
+    Debug.LogError("进入到怪物的回合")
+    --回合数减少
+    self.EnemyData.FightRound_cur  = self.EnemyData.FightRound_cur -1 
+    self.AttackCountDown_text.text = self.EnemyData.FightRound_cur
+    --当回合数为0 ， 进入 怪物的攻击回合
+    if self.EnemyData.FightRound_cur == 0 then
+        
+    end
 end
 return TopFightPanel

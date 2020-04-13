@@ -6,7 +6,6 @@
 EventSystem = EventSystem or {}
 EventName ={}
 
-
 function EventSystem:GetInstance()
     if EventSystem.Instance then
         return EventSystem.Instance

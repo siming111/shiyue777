@@ -3,7 +3,7 @@
     @author: yxy
 ]]
 local PlayerDate ={
-    Power         = 10      --攻击力
+    Power         = 100      --攻击力
     ,Energy_total = 100     --总能量
     ,Shield_total = 100     --总护盾
     ,Hp_total     = 100     --总血量
