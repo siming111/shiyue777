@@ -24,11 +24,12 @@ public class Entrance : MonoBehaviour
                 luaFunction.call();
             }
         });
+        LeanTween.move(gameObject, new Vector3(0f, 1f, 2f), 1f);
     }
 
     void Update()
     {
-        updateFunction.call();
+        //updateFunction.call();
     }
 
     // SLua Loader代理方法

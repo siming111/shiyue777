@@ -4,7 +4,7 @@ local BlockItem = require "BlockItem"
 
 blockItems = {}
 clickBlocks = {}
-
+positionTable = {}
 function XXL:new()
     local o = {}
     setmetatable( o, { __index = self })
@@ -12,9 +12,7 @@ function XXL:new()
 end
 
 function XXL:Hello()
-    local space = 126
-    local shiftX = 87
-    local shiftY = -142
+    XXL:InitPositionTable()
     for i=1,7,1 do
         blockItems[i] ={}
         for j=1,9,1 do
@@ -33,16 +31,32 @@ function XXL:Hello()
     XXL:Show()
 end
 
+function XXL:InitPositionTable()
+    local space = 126
+    local shiftX = 87
+    local shiftY = -142
+    for i=-6,7,1 do
+        positionTable[i] ={}
+        for j=1,9,1 do
+            positionTable[i][j]=Vector3(shiftX+(j-1)*space,shiftY-(i-1)*space,0)
+        end
+
+    end
+end
+
 function XXL:Update()
     -- Debug.Log("lengthX="..#blockItems.."lengthY="..#blockItems[1])
 end
-
 
 function XXL:MoveBlock(block,i,j)--移动砖块到指定位置，并更新住砖块内容坐标
     Debug.Log("砖块(i="..block.i..",j="..block.j..")移动到("..i..","..j..")上")
     block.i = i
     block.j = j
     blockItems[i][j] = block
+end
+
+function XXL:SayHello()
+    Debug.Log("hello!!!!!!!!!!!!!!!!!!!!!")
 end
 
 function XXL:ExchangeBlcok(block1,block2)--交换砖块
@@ -68,14 +82,17 @@ function XXL:Click(i,j)
             if(true)--两个砖块是否相邻
             then
             clickBlocks.secondBlock = blockItems[i][j]
-            XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
-            local clearBlocks = XXL:IsOK()
-            for key, value in pairs(clearBlocks) do  
-                for key1, value1 in pairs(value) do
-                    GameObject.Destroy(value1.block.gameObject)
-                    Debug.Log("i="..value1.i..",j="..value1.j)
+            LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], 1)
+            LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], 1):setOnComplete(
+                function()
+                    XXL:Judge()--砖块发生移动会
                 end
-            end
+            )
+            XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
+            clickBlocks.firstBlock = nil
+            clickBlocks.secondBlock = nil
+            XXL:Show()
+            -- XXL:Judge()
             -- Debug.Log("clearBlock = "..#clearBlocks)
             else
             end
@@ -85,6 +102,43 @@ function XXL:Click(i,j)
     -- Debug.Log("first:i="..clickBlocks.firstBlock.i..",j="..clickBlocks.firstBlock.j)
 end
 
+
+function XXL:Judge()
+    local clearBlocks = XXL:IsOK()
+    for key, value in pairs(clearBlocks) do  
+        for key1, value1 in pairs(value) do
+            XXL:DestroyBlock(value1)
+        end
+    end
+    XXL:Show()
+    XXL:SayHello()
+    XXL:Fall()
+end
+
+function XXL:Fall()--砖块掉落
+    for j=1,9,1 do
+        local empty = 0
+        for i=7,1,-1 do
+            if(blockItems[i][j]==nil)then
+                empty = empty + 1
+            else
+                LeanTween.move(blockItems[i][j].block,positionTable[blockItems[i][j].i+empty][blockItems[i][j].j],1)
+                XXL:MoveBlock(blockItems[i][j],blockItems[i][j].i+empty,blockItems[i][j].j)
+            end
+        end
+        for i = 1,empty,1 do
+            local blockItem = BlockItem:new(1-i,j,math.random(6))
+            LeanTween.move(blockItem.block,positionTable[1-i+empty][j],1)
+            XXL:MoveBlock(blockItem,1-i+empty,j)
+        end
+    end
+    XXL:Show()
+end
+
+function XXL:DestroyBlock(blockItem)
+    blockItems[blockItem.i][blockItem.j] = nil
+    GameObject.Destroy(blockItem.block.gameObject)
+end
 
 function XXL:IsOK()
     local clearBlocks = {}
@@ -141,11 +195,16 @@ function XXL:Show()
     s = ""
     for i=1,7,1 do
         for j=1,9,1 do
-            s = s.."(i"..blockItems[i][j].i.."j"..blockItems[i][j].j.."t"..blockItems[i][j].blockType..") "
+            if(blockItems[i][j]==nil)then
+                s = s.."(nil     ) "
+            else
+                s = s.."(i"..blockItems[i][j].i.."j"..blockItems[i][j].j.."t"..blockItems[i][j].blockType..") "
+            end
         end
         s = s.."\n"
     end
     print(s)
 end
+
 
 return XXL

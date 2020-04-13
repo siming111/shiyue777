@@ -15,7 +15,7 @@ function BlockItem:new(i,j,blockType)
     o.blockType = blockType
     o.block =  GameObject.Instantiate(Obj, board)
     o.block.gameObject:SetActive(true)
-    o.block.transform.localPosition = Vector3(shiftX+(j-1)*space, shiftY-(i-1)*space, 0)
+    o.block.transform.localPosition = positionTable[i][j]
     local image = o.block.transform:Find("icon")
     image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[blockType]
     -- self.block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
