@@ -12,7 +12,13 @@ function Awake()
     local TopFightPanel = _Top:new()
     TopFightPanel:Init()
     x:Hello()
-    -- EventSystem:GetInstance():Fire("Hello")
+    local data = {
+        [1] = {type = 1 , times = 1} --回血
+       ,[2] = {type = 2 , times = 1} --回盾
+       ,[3] = {type = 3 , times = 1} --加能量
+       ,[4] = {type = 4 , times = 1} --攻击
+   }
+    EventSystem:GetInstance():Fire("Hello",data)
 end
 
 function Update()

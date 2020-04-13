@@ -32,11 +32,11 @@ function EventSystem:AddListener(event_name , event_func)
     table.insert(EventName[event_name],event_func)
 end
 
-function EventSystem:Fire(event_name)
-    for i,v in pairs(EventName) do 
+function EventSystem:Fire(event_name,event_data)
+    for i,v in pairs(EventName) do
         if i == event_name then
-            for index ,value in pairs(v) do 
-                value()
+            for index ,value in pairs(v) do
+                value(event_data)
             end
         end
     end

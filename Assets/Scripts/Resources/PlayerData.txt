@@ -5,11 +5,18 @@
 local PlayerDate ={
     Power         = 10      --攻击力
     ,Energy_total = 100     --总能量
-    ,Shield_total = 100      --总护盾
-    ,Hp_total     = 1000    --总血量
+    ,Shield_total = 100     --总护盾
+    ,Hp_total     = 100     --总血量
 
     ,Energy_cur   = 0       --当前能力
     ,Shield_cur   = 0       --当前护盾
-    ,HP_cur       = 1000    --当前血量
+    ,HP_cur       = 50      --当前血量
+
+    --固定道具加成
+    ,Item = {
+        Hp = 25         --血量+25
+        ,Shield = 20    --护盾+20
+        ,Energt = 15    --能量+15
+    }
 }
 return PlayerDate
