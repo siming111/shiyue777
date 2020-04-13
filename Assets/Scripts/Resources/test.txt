@@ -9,9 +9,9 @@ local x = _XXL:new()
 
 function Awake()
     -- body
-    print "hello lua"
-    print("Lua创建了一个Cube")
-    Debug.Log("SSSSSSSS")
+    -- print "hello lua"
+    -- print("Lua创建了一个Cube")
+    -- Debug.Log("SSSSSSSS")
     x:Hello()
     local TopFightPanel = _Top:new()
     TopFightPanel:Init()
