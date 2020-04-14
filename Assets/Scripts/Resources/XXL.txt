@@ -1,7 +1,7 @@
 -- import "BoardBlock"
 local XXL = XXL or {}
 local BlockItem = require "BlockItem"
-
+local TopFightPanel = require "TopFightPanel"
 time = 0.5--砖块下落时间
 typeNumber = 4
 blockItems = {}
@@ -69,10 +69,15 @@ function XXL:ExchangeBlcok(block1,block2)--交换砖块
     XXL:MoveBlock(block2,i1,j1)
 end
 
--- function XXL:SelectBLock(block)
---     clickBlocks.firstBlock = block
---     block.selectImage.gameObject:SetActive(true)
--- end
+function XXL:SelectBLock(block)
+    clickBlocks.firstBlock = block
+    block.selectImage.gameObject:SetActive(true)
+end
+
+function XXL:CancelSelectBlock()
+    clickBlocks.firstBlock.selectImage.gameObject:SetActive(false)
+    clickBlocks.firstBlock = nil
+end
 
 function XXL:Click(blockItem)
     local i = blockItem.i
@@ -80,36 +85,40 @@ function XXL:Click(blockItem)
     Debug.Log("i="..i..",j="..j..",t="..blockItems[i][j].blockType)
     if(clickBlocks.firstBlock == nil)--如果第一个元素为空
     then
-        -- XXL:SelectBLock(blockItem)
-        clickBlocks.firstBlock = blockItem
+        XXL:SelectBLock(blockItem)
+        -- clickBlocks.firstBlock = blockItem
     else
         if(clickBlocks.firstBlock == blockItems[i][j])--如果点击的物体与第一个存放的物体相同
         then
-            clickBlocks.firstBlock = nil
+            XXL:CancelSelectBlock(clickBlocks.firstBlock)
         else
-            if(true)--两个砖块是否相邻
+            if((clickBlocks.firstBlock.i==blockItem.i and math.abs(clickBlocks.firstBlock.j-blockItem.j)==1) or
+            (clickBlocks.firstBlock.j==blockItem.j and math.abs(clickBlocks.firstBlock.i-blockItem.i)==1))--两个砖块是否相邻
             then
-            clickBlocks.secondBlock = blockItems[i][j]
-            LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], time)
-            LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time):setOnComplete(
-                function()
-                    if(XXL:Judge())then
-                        XXL:Fall()--砖块掉落
+                clickBlocks.secondBlock = blockItems[i][j]
+                clickBlocks.firstBlock.selectImage.gameObject:SetActive(false)
+                LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], time)
+                LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time):setOnComplete(
+                    function()
+                        if(XXL:Judge())then
+                            XXL:Fall()--砖块掉落
 
-                    else
-                        LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], time)
-                        LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time)
-                        XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
+                        else
+                            LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], time)
+                            LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time)
+                            XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
+                        end
+                            clickBlocks.firstBlock = nil
+                            clickBlocks.secondBlock = nil
                     end
-                        clickBlocks.firstBlock = nil
-                        clickBlocks.secondBlock = nil
-                end
-            )
-            XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
-            XXL:Show()
+                )
+                XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
+                XXL:Show()
             -- XXL:Judge()
             -- Debug.Log("clearBlock = "..#clearBlocks)
             else
+                XXL:CancelSelectBlock()
+                XXL:SelectBLock(blockItem)
             end
         end
     end
@@ -121,9 +130,6 @@ end
 function XXL:Judge()
     local clearBlocks = XXL:IsOK()
     if(clearBlocks)then
-    -- if(clearBlocks)then
-    --     return false
-    -- else
         for key, value in pairs(clearBlocks) do  
             for key1, value1 in pairs(value) do
                 XXL:DestroyBlock(value1)
@@ -152,7 +158,8 @@ function XXL:Fall()--砖块掉落
                     lt:setOnComplete(
                         function()
                             if(XXL:Judge())then
-                                XXL:Fall()
+                                TopFightPanel:GetInstance():UpdateRound(self.fightData)
+                                -- XXL:Fall()
                             end
                         end
                     )
@@ -194,8 +201,6 @@ function XXL:IsOK()
                 blockItems[i][j].blockType==blockItems[i][j+2].blockType)--成功检测到消除
             then 
                 OK = true
-                -- table.insert(fightData,blockItems[i][j].blockType)
-                -- Debug.Log(blockItems[i][j].blockType.."?????????")
                 self.fightData[#self.fightData+1] = blockItems[i][j].blockType
                 clearBlocks[i][j] = blockItems[i][j]
                 clearBlocks[i][j+1] = blockItems[i][j+1]
@@ -209,8 +214,6 @@ function XXL:IsOK()
                 blockItems[i][j].blockType==blockItems[i+2][j].blockType)--成功检测到消除
             then 
                 OK = true
-                -- table.insert(fightData,blockItems[i][j].blockType)
-                -- Debug.Log(blockItems[i][j].blockType.."?????????")
                 self.fightData[#self.fightData+1] = blockItems[i][j].blockType
                 clearBlocks[i][j] = blockItems[i][j]
                 clearBlocks[i+1][j] = blockItems[i+1][j]
@@ -218,14 +221,52 @@ function XXL:IsOK()
             end
         end
     end
-    -- if(OK)then
-    --     -- Debug.Log("OK=true")
-    -- else
-    --     Debug.Log("OK=false")
+
+    if(OK==true)then
+        return clearBlocks
+    end
+    
+    return nil
+    -- if(OK == true)
+    -- then 
+    --     return clearBlock
+    -- else 
+    --     return nil
     -- end
-    Debug.Log(#self.fightData.."-------------------------------")
-    for i,v in pairs(self.fightData) do 
-        Debug.Log("第".. i .. "个元素的  BlockType为  ".. v)
+end
+
+function XXL:IsOK666()
+    self.fightData = {}
+    local clearBlocks = {}
+    local OK = false
+    for i=1,7,1 do--初始化清除表
+        clearBlocks[i] ={}
+    end
+    for i=1,7,1 do--横向检测
+        for j=1,7,1 do
+            if(blockItems[i][j].blockType==blockItems[i][j+1].blockType and 
+                blockItems[i][j].blockType==blockItems[i][j+2].blockType)--成功检测到消除
+            then 
+                OK = true
+                self.fightData[#self.fightData+1] = blockItems[i][j].blockType
+                clearBlocks[i][j] = blockItems[i][j]
+                clearBlocks[i][j+1] = blockItems[i][j+1]
+                clearBlocks[i][j+2] = blockItems[i][j+2]
+            end
+        end
+    end
+    for i=1,5,1 do--纵向检测
+        for j=1,9,1 do
+            if(blockItems[i][j].blockType==blockItems[i+1][j].blockType and 
+                blockItems[i][j].blockType==blockItems[i+2][j].blockType)--成功检测到消除
+            then 
+                OK = true
+                self.fightData[#self.fightData+1] = blockItems[i][j].blockType
+                clearBlocks[i][j] = blockItems[i][j]
+                clearBlocks[i+1][j] = blockItems[i+1][j]
+                clearBlocks[i+2][j] = blockItems[i+2][j]
+            end
+        end
     end
 
     if(OK==true)then

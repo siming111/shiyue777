@@ -15,9 +15,9 @@ function BlockItem:new(i,j,blockType)
     o.blockType = blockType
     o.block =  GameObject.Instantiate(Obj, board)
     o.block.gameObject:SetActive(true)
-    self.selectImage = o.block.transform:Find("selectImage")
-    self.selectImage.gameObject:GetComponent(UnityEngine.UI.Image).sprite = Resources.Load("Textures/7Tex/Pause",Sprite)
-    self.selectImage.gameObject:SetActive(false)
+    o.selectImage = o.block.transform:Find("selectImage")
+    o.selectImage.gameObject:GetComponent(UnityEngine.UI.Image).sprite = Resources.Load("Textures/7Tex/Pause",Sprite)
+    o.selectImage.gameObject:SetActive(false)
     o.block.transform.localPosition = positionTable[i][j]
     local image = o.block.transform:Find("icon")
     image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[blockType]
