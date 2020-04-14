@@ -16,6 +16,10 @@ end
 function XXL:Hello()
     XXL:InitPositionTable()
     TopFightPanel:Init()
+    for i=1,10,1 do
+        i = i+1
+        Debug.Log("i="..i)
+    end
     for i=1,7,1 do
         blockItems[i] ={}
         for j=1,9,1 do
@@ -123,8 +127,8 @@ function XXL:Click(blockItem)
                 LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time):setOnComplete(
                     function()
                         if(XXL:Judge())then
-                            TopFightPanel:GetInstance():UpdateRound(self.fightData)
-                            -- XXL:Fall()--砖块掉落
+                            -- TopFightPanel:GetInstance():UpdateRound(self.fightData)
+                            XXL:Fall()--砖块掉落
                         else
                             LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], time)
                             LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time)
@@ -150,37 +154,63 @@ end
 
 
 function XXL:Judge()
-    local clearBlocks = XXL:IsOK()--诗悦777版本
-    if(clearBlocks)then
-        for key, value in pairs(clearBlocks) do  
-            for key1, value1 in pairs(value) do
-                XXL:DestroyBlock(value1)
-            end
-        end
-        return true
-    else
-        return false
-    end
-    -- local clearBlocks = XXL:IsOK666()
-    -- s = ""
+    -- local clearBlocks = XXL:IsOK()--诗悦777版本
     -- if(clearBlocks)then
     --     for key, value in pairs(clearBlocks) do  
     --         for key1, value1 in pairs(value) do
-    --             s = s.."{"
-    --             for key2, value2 in pairs(value1) do
-    --                 s = s.."i"..value2.i.."j"..value2.j.."t"..value2.blockType..","
-    --                 if(blockItems[value2.i][value2.j] ~= nil)then
-    --                     XXL:DestroyBlock(value2)
-    --                 end
-    --             end
-    --             s = s.."}\n"
+    --             XXL:DestroyBlock(value1)
     --         end
     --     end
-    --     Debug.Log(s)
     --     return true
     -- else
     --     return false
     -- end
+    local clearBlocks = XXL:IsOK666()--666工作室版本
+    local blockNumberTable = {}
+    if(clearBlocks)then
+        for key, value in pairs(clearBlocks) do
+            for key1,value1 in pairs(value) do
+                if(blockNumberTable[#value1] == nil)then
+                    blockNumberTable[#value1] = 0
+                end
+                blockNumberTable[#value1] = blockNumberTable[#value1] + 1
+            end
+        end
+    end
+    three =0
+    four = 0
+    five = 0
+    for key,value in pairs(blockNumberTable) do
+        if(key==3) then
+            three = three + value/key
+        end
+        if(key==4) then
+            four = four + value/key
+        end
+        if(key>=5) then
+            five = five + value/key
+        end
+    end
+    Debug.Log("three = "..three..",four = "..four..",five = "..five)
+    s = ""
+    if(clearBlocks)then
+        for key, value in pairs(clearBlocks) do  
+            for key1, value1 in pairs(value) do
+                s = s.."{"
+                for key2, value2 in pairs(value1) do
+                    s = s.."i"..value2.i.."j"..value2.j.."t"..value2.blockType..","
+                    if(blockItems[value2.i][value2.j] ~= nil)then
+                        XXL:DestroyBlock(value2)
+                    end
+                end
+                s = s.."}\n"
+            end
+        end
+        Debug.Log(s)
+        return true
+    else
+        return false
+    end
 end
 
 function XXL:Fall()--砖块掉落
@@ -196,8 +226,8 @@ function XXL:Fall()--砖块掉落
                     lt:setOnComplete(
                         function()
                             if(XXL:Judge())then
-                                TopFightPanel:GetInstance():UpdateRound(self.fightData)
-                                -- XXL:Fall()
+                                -- TopFightPanel:GetInstance():UpdateRound(self.fightData)
+                                XXL:Fall()
                             end
                         end
                     )
@@ -250,20 +280,11 @@ function XXL:IsOK666()--666工作组检测
                 OK = true
                 self.fightData[#self.fightData+1] ={type = blockItems[i][j].blockType}
                 local clearTable = {}
-                -- table.insert(clearTable,blockItems[i][j])
-                -- clearBlocks[i][j] = clearTable
-                -- table.insert(clearTable,blockItems[i][j+1])
-                -- clearBlocks[i][j+1] = clearTable
-                -- table.insert(clearTable,blockItems[i][j+2])
-                -- clearBlocks[i][j+2] = clearTable
                 for k=j,9,1 do
                     if(blockItems[i][k].blockType==blockItems[i][j].blockType)then
                         table.insert(clearTable,blockItems[i][k])
                         clearBlocks[i][k] = clearTable
-                        Debug.Log("i="..i.."k="..k)
-                        -- Debug.Log("--------------------------")
-                        -- XXL:PrintClearBlock(clearBlocks[i][k-1])
-                        -- XXL:PrintClearBlock(clearTable)
+                        -- Debug.Log("i="..i.."k="..k)
                     else
                         break
                     end
@@ -271,15 +292,17 @@ function XXL:IsOK666()--666工作组检测
             end
         end
     end
-    for i=1,5,1 do--纵向检测
-        for j=1,9,1 do
+    for j=1,9,1 do--纵向检测
+        local i = 1
+        while(i<=5) do
             if(blockItems[i][j].blockType==blockItems[i+1][j].blockType and 
                 blockItems[i][j].blockType==blockItems[i+2][j].blockType)--成功检测到消除
             then 
                 OK = true
                 self.fightData[#self.fightData+1] = {type = blockItems[i][j].blockType}
                 local clearTable = {}
-                for k=i,7,1 do
+                local k = i
+                while(k<=7)do
                     if(blockItems[k][j].blockType==blockItems[i][j].blockType)then
                         if(clearBlocks[k][j]~=nil)then
                             for key,value in ipairs(clearBlocks[k][j]) do
@@ -289,20 +312,28 @@ function XXL:IsOK666()--666工作组检测
                             table.insert(clearTable,blockItems[k][j])
                         end
                     else
+                        i = k - 1
+                        -- Debug.Log("i="..i.."------------------")
+                        flagtt = true
                         break
                     end
+                    k = k+1
                 end
                 for key,value in ipairs(clearTable)do
                     clearBlocks[value.i][value.j] = clearTable
                 end
+                if(k > 5)then--如果已经三消延伸到最底下倒数第三个，则剩余的倒数第两个无需检测
+                    break
+                end
             end
+            i = i + 1
         end
     end
 
     if(OK==true)then
         return clearBlocks
     end
-    Debug.LogError(#self.fightData)
+    -- Debug.LogError(#self.fightData)
     -- if #self.fightData ==0 then 
     --     Debug.LogError("!!!!进入FALL 稳态")
     --     TopFightPanel:GetInstance():UpdateRound({type = 5 })
@@ -353,10 +384,10 @@ function XXL:IsOK()
     if(OK==true)then
         return clearBlocks
     end
-    if #self.fightData ==0 then 
-        Debug.LogError("!!!!进入FALL 稳态")
-        TopFightPanel:GetInstance():UpdateRound({[1] = { type = 5 }})
-    end
+    -- if #self.fightData ==0 then 
+    --     Debug.LogError("!!!!进入FALL 稳态")
+    --     TopFightPanel:GetInstance():UpdateRound({[1] = { type = 5 }})
+    -- end
     return nil
     -- if(OK == true)
     -- then 
