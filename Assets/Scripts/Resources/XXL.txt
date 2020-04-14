@@ -15,6 +15,8 @@ end
 
 function XXL:Hello()
     XXL:InitPositionTable()
+    TopFightPanel:Init()
+    
     for i=1,7,1 do
         blockItems[i] ={}
         for j=1,9,1 do
@@ -28,6 +30,26 @@ function XXL:Hello()
             )
         end
     end
+    -- local clearBlocks = XXL:IsOK()
+    -- for key, value in pairs(clearBlocks) do  
+    --     for key1, value1 in pairs(value) do
+    --         value1.blockType = math.random(typeNumber)
+    --         value1.image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[value1.blockType]
+    --     end
+    -- end
+    local clearBlocks = XXL:IsOK()
+    local resetTime = 0
+    while(clearBlocks)do
+        resetTime = resetTime + 1
+        for key, value in pairs(clearBlocks) do  
+            for key1, value1 in pairs(value) do
+                value1.blockType = math.random(typeNumber)
+                value1.image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[value1.blockType]
+            end
+        end
+        clearBlocks = XXL:IsOK()
+    end
+    Debug.Log("resetTime="..resetTime)
     XXL:Show()
 end
 
@@ -101,6 +123,7 @@ function XXL:Click(blockItem)
                 LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time):setOnComplete(
                     function()
                         if(XXL:Judge())then
+
                             XXL:Fall()--砖块掉落
 
                         else
@@ -128,21 +151,32 @@ end
 
 
 function XXL:Judge()
-    local clearBlocks = XXL:IsOK()
+    -- local clearBlocks = XXL:IsOK()
+    -- if(clearBlocks)then
+    --     for key, value in pairs(clearBlocks) do  
+    --         for key1, value1 in pairs(value) do
+    --             XXL:DestroyBlock(value1)
+    --         end
+    --     end
+    --     return true
+    -- else
+    --     return false
+    -- end--诗悦777版本
+    local clearBlocks = XXL:IsOK666()
     if(clearBlocks)then
         for key, value in pairs(clearBlocks) do  
             for key1, value1 in pairs(value) do
-                XXL:DestroyBlock(value1)
+                for key2, value2 in pairs(value1) do
+                    if(blockItems[value2.i][value2.j] ~= nil)then
+                        XXL:DestroyBlock(value2)
+                    end
+                end
             end
         end
         return true
     else
         return false
     end
-        -- return true
-    -- end
-    -- XXL:Show()
-    -- XXL:SayHello()
 end
 
 function XXL:Fall()--砖块掉落
@@ -158,8 +192,8 @@ function XXL:Fall()--砖块掉落
                     lt:setOnComplete(
                         function()
                             if(XXL:Judge())then
-                                TopFightPanel:GetInstance():UpdateRound(self.fightData)
-                                -- XXL:Fall()
+                                -- TopFightPanel:GetInstance():UpdateRound(self.fightData)
+                                XXL:Fall()
                             end
                         end
                     )
@@ -188,7 +222,7 @@ function XXL:DestroyBlock(blockItem)
     GameObject.Destroy(blockItem.block.gameObject)
 end
 
-function XXL:IsOK()
+function XXL:IsOK666()--666工作组检测
     self.fightData = {}
     local clearBlocks = {}
     local OK = false
@@ -197,14 +231,22 @@ function XXL:IsOK()
     end
     for i=1,7,1 do--横向检测
         for j=1,7,1 do
-            if(blockItems[i][j].blockType==blockItems[i][j+1].blockType and 
+            if(blockItems[i][j]~=nil and
+                blockItems[i][j].blockType==blockItems[i][j+1].blockType and 
                 blockItems[i][j].blockType==blockItems[i][j+2].blockType)--成功检测到消除
             then 
                 OK = true
                 self.fightData[#self.fightData+1] = blockItems[i][j].blockType
-                clearBlocks[i][j] = blockItems[i][j]
-                clearBlocks[i][j+1] = blockItems[i][j+1]
-                clearBlocks[i][j+2] = blockItems[i][j+2]
+                local clearTable = {}
+                clearBlocks[i][j] = clearTable
+                clearBlocks[i][j+1] = clearTable
+                clearBlocks[i][j+2] = clearTable
+                table.insert(clearTable,blockItems[i][j])
+                table.insert(clearTable,blockItems[i][j+1])
+                table.insert(clearTable,blockItems[i][j+2])
+                -- clearBlocks[i][j] = blockItems[i][j]
+                -- clearBlocks[i][j+1] = blockItems[i][j+1]
+                -- clearBlocks[i][j+2] = blockItems[i][j+2]
             end
         end
     end
@@ -215,9 +257,16 @@ function XXL:IsOK()
             then 
                 OK = true
                 self.fightData[#self.fightData+1] = blockItems[i][j].blockType
-                clearBlocks[i][j] = blockItems[i][j]
-                clearBlocks[i+1][j] = blockItems[i+1][j]
-                clearBlocks[i+2][j] = blockItems[i+2][j]
+                local clearTable = {}
+                clearBlocks[i][j] = clearTable
+                clearBlocks[i+1][j] = clearTable
+                clearBlocks[i+2][j] = clearTable
+                table.insert(clearTable,blockItems[i][j])
+                table.insert(clearTable,blockItems[i+1][j])
+                table.insert(clearTable,blockItems[i+2][j])
+                -- clearBlocks[i][j] = blockItems[i][j]
+                -- clearBlocks[i+1][j] = blockItems[i+1][j]
+                -- clearBlocks[i+2][j] = blockItems[i+2][j]
             end
         end
     end
@@ -235,7 +284,7 @@ function XXL:IsOK()
     -- end
 end
 
-function XXL:IsOK666()
+function XXL:IsOK()
     self.fightData = {}
     local clearBlocks = {}
     local OK = false
