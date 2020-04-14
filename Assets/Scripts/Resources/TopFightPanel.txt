@@ -4,6 +4,7 @@
 ]]
 UnityEngine.Time.fixedDeltaTime = 0.1
 local TopFightPanel = TopFightPanel or {}
+-- local XXL = require "XXL"
 function TopFightPanel:new()
     o = o or {}
     setmetatable( o, { __index = self }) 
@@ -13,7 +14,7 @@ end
 function TopFightPanel:Init()
     EventSystem:GetInstance():init()
     EventSystem:GetInstance():AddListener("Hello",function()  self:UpdateRound() end)
-    local EventName  = EventSystem:GetInstance().EventName
+    -- local EventName  = EventSystem:GetInstance().EventName
 
     --获得当前关卡
     local level = 1
@@ -46,6 +47,7 @@ function TopFightPanel:InitPanel()
     self.FireBall =self.C_Player.transform:Find("fireball").gameObject
     self.Player  = self.C_Player.transform:Find("Player").gameObject
     self.hp      = self.C_Player.transform:Find("Hp").gameObject
+    self.Energy  = self.C_Player.transform:Find("Hp").gameObject
     self.hitImage= self.FireBall.transform:Find("hitImage").gameObject
     self.FireBallImage = self.FireBall.transform:Find("fireballImage").gameObject
     self.hpAddText     = self.hp.transform:Find("hpAddText").gameObject:GetComponent(Text)
@@ -64,29 +66,31 @@ function TopFightPanel:InitPanel()
     
     --UI
     self.UIState     = GameObject.Find("GuildCrushWindow/TopPanel/UIState")
-    self.Hp_text     = self.UIState.transform:Find("Hp_text").gameObject:GetComponent(Text)
-    self.Energy_text = self.UIState.transform:Find("Energy_text").gameObject:GetComponent(Text)
-    self.Shield_text = self.UIState.transform:Find("Shield_text").gameObject:GetComponent(Text)
+    self.Hp_text     = self.UIState.transform:Find("Hp_text/Hp_text").gameObject:GetComponent(Text)
+    self.Energy_text = self.UIState.transform:Find("Energy_text/Energy_text").gameObject:GetComponent(Text)
+    self.Shield_text = self.UIState.transform:Find("Shield_text/Shield_text").gameObject:GetComponent(Text)
     self.Level_text  = self.UIState.transform:Find("Level_text/Level_text (1)").gameObject:GetComponent(Text)
     
     --怪物相关组件
     self.BossHpBar = self.UIState.transform:Find("BossHpBg/BossHpBar").gameObject:GetComponent(Image)
     self.BossHpLoad= self.UIState.transform:Find("BossHpBg/BossHpLoad").gameObject:GetComponent(Image)
     self.BossHpText= self.UIState.transform:Find("BossHpBg/BossHpText").gameObject:GetComponent(Text)
-    self.BossHpText.text = self.EnemyData.Hp_cur     .. "/" .. self.EnemyData.Hp_total
+    self.Hp_text_Bar=self.UIState.transform:Find("Hp_text/Hp_text_Bar").gameObject:GetComponent(Image)
+    self.Energy_text_Bar=self.UIState.transform:Find("Energy_text/Energy_text_Bar").gameObject:GetComponent(Image)
+    self.Shield_text_Bar=self.UIState.transform:Find("")
+
+    self.BossHpText.text = self.EnemyData.Hp_cur .. "/" .. self.EnemyData.Hp_total
     self.BossHpBar.fillAmount = self.EnemyData.Hp_cur/self.EnemyData.Hp_total
 
-    self.Hp_text.text    = self.PlayerData.HP_cur    .. "/" .. self.PlayerData.Hp_total
-    self.Energy_text.text= self.PlayerData.Energy_cur.. "/" .. self.PlayerData.Energy_total
-    self.Shield_text.text= self.PlayerData.Shield_cur.. "/" .. self.PlayerData.Shield_total
+    self.Hp_text.text    = self.PlayerData.HP_cur  --[[  .. "/" .. self.PlayerData.Hp_total]]
+    self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
+
+    self.Energy_text.text= self.PlayerData.Energy_cur --[[.. "/" .. self.PlayerData.Energy_total]]
+    self.Energy_text_Bar.fillAmount=self.PlayerData.Energy_cur/self.PlayerData.Energy_total
+
+    self.Shield_text.text= self.PlayerData.Shield_cur --[[ "/" .. self.PlayerData.Shield_total]]
     self.Level_text.text = 1
 
-    -- local data = {
-    --      [1] = {type = 1 , times = 1} --回血
-    --     ,[2] = {type = 2 , times = 1} --回盾
-    --     ,[3] = {type = 3 , times = 1} --加能量
-    --     ,[4] = {type = 4 , times = 1} --攻击
-    -- }
     -- self:UpdateRound(data) --假设现在传进来一个数据
 
     -- 测试专用
@@ -96,12 +100,46 @@ function TopFightPanel:InitPanel()
     -- end)
 end
  
+
+    -- local data = {
+    --      [1] = {type = 1 , times = 1} --回血
+    --     ,[2] = {type = 2 , times = 1} --回盾
+    --     ,[3] = {type = 3 , times = 1} --加能量
+    --     ,[4] = {type = 4 , times = 1} --攻击
+    -- }
 --更新回合数据（通过事件访问）
-function TopFightPanel:UpdateRound(data)
-    if data == nil then
+function TopFightPanel:UpdateRound(info)
+    if info == nil then
         Debug.LogError("UpdateRound没有传参")
-        return
-    end  
+    return
+end
+    local data = {}
+    local times= {[1]=0,[2]=0,[3]=0,[4]=0}
+    for i,v in pairs(info) do
+        if v.type == 1 then 
+            times[1] = times[1] + 1 
+        elseif v.type ==2 then 
+            times[2] = times[2] + 1
+        elseif v.type ==3 then 
+            times[3] = times[3] + 1 
+        elseif v.type ==4 then 
+            times[4] = times[4] + 1 
+        elseif v.type ==5 then 
+            times[5] = times[5] + 1
+        end
+    end
+    for i,v in pairs(times) do 
+        if v ~= 0 then 
+            data[i] = {type = i , time = v}
+        end
+    end
+
+    for i,v in pairs(data) do 
+        Debug.Log(v.type .."  ".. v.time)
+    end
+    LuaTimer.Add(3000, function ()
+        Debug.LogError("回调XXL")
+    end)
     --判断传进来的数据是什么类型
     for i,v in pairs(data) do --遍历数据
         --血量
@@ -109,20 +147,25 @@ function TopFightPanel:UpdateRound(data)
             --先播放加血动画
             self.hp:SetActive(true)
             self.PlayerAnim:SetBool("Hpadd",true )
-            self.hpAddText.text = self.PlayerData.Item.Hp * v.times
+            self.hpAddText.text = self.PlayerData.Item.Hp * v.time
+            -- self.hpAddText.text = self.PlayerData.Item.Hp 
             self.player_AttackTimer = LuaTimer.Add(400,function()
                 self.hp:SetActive(false)
                 self.PlayerAnim:SetBool("Hpadd",false)
                 -- self.PlayerAnim:SetBool("Hpadd",true)
             end)
-            self.PlayerData.HP_cur  = self.PlayerData.HP_cur + (self.PlayerData.Item.Hp * v.times)
+            self.PlayerData.HP_cur  = self.PlayerData.HP_cur + (self.PlayerData.Item.Hp * v.time)
+            -- self.PlayerData.HP_cur  = self.PlayerData.HP_cur + (self.PlayerData.Item.Hp )
             --如果血量超过100
             if self.PlayerData.HP_cur >= self.PlayerData.Hp_total then 
                 self.PlayerData.HP_cur = self.PlayerData.Hp_total
             end
-            self.Hp_text.text    = self.PlayerData.HP_cur    .. "/" .. self.PlayerData.Hp_total --更新血量
+            self.Hp_text.text    = self.PlayerData.HP_cur --[[  .. "/" .. self.PlayerData.Hp_total --更新血量 ]]
+            self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
         --护盾
         elseif v.type == 2 then
+            --播放加护盾动画
+            
         --攻击
         elseif v.type == 3 then
 
