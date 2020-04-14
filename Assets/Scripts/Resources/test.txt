@@ -7,6 +7,7 @@ require "EventSystem"
 local _XXL = require "XXL"
 local _Top = require "TopFightPanel"
 XXLPanel = _XXL:new()
+sprites = {}
 
 function Awake()
     local TopFightPanel = _Top:new()
@@ -20,6 +21,17 @@ function Awake()
     -- }
     -- TopFightPanel:GetInstance():UpdateRound(data)
 end
+
+
+function LoadSprites()
+    for i = 1,6,1 do
+        -- Textures/Crush/Icon
+        sprites[i] = Resources.Load("Textures/7Tex/Icon_"..i,Sprite)
+        -- sprites[i] = Resources.Load("Textures/7Tex/Icon","Icon_"..i,Sprite)
+    end
+end
+
+LoadSprites()
 
 function Update()
     x:Update()

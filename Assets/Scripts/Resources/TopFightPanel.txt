@@ -94,15 +94,15 @@ function TopFightPanel:InitPanel()
     self.Shield_text.text= self.PlayerData.Shield_cur --[[ "/" .. self.PlayerData.Shield_total]]
     self.Level_text.text = 1
 
-    local info = {
-         [1] = {type = 1 } --回血
-        ,[2] = {type = 2 } --回盾
-        ,[3] = {type = 3 } --加能量
-        ,[4] = {type = 4 } --攻击
-        ,[5] = {type = 1 }
-    }
+    -- local info = {
+    --      [1] = {type = 1 } --回血
+    --     ,[2] = {type = 2 } --回盾
+    --     ,[3] = {type = 3 } --加能量
+    --     ,[4] = {type = 4 } --攻击
+    --     ,[5] = {type = 1 }
+    -- }
     -- 测试专用
-    self:UpdateRound(info) --假设现在传进来一个数据
+    -- self:UpdateRound(info) --假设现在传进来一个数据
     
     -- LuaTimer.Add(10000,function() 
     -- --怪物收到攻击逻辑处理
@@ -110,16 +110,19 @@ function TopFightPanel:InitPanel()
     -- end)
 end
  
-
+function TopFightPanel:CallBack()
+    XXLPanel:Fall()
+end
     
 --更新回合数据（通过事件访问）
 function TopFightPanel:UpdateRound(info)
     if info == nil then
         Debug.LogError("UpdateRound没有传参")
-    return
-end
+        return
+    end
+    local isCallBack = true 
     local data = {}
-    local times= {[1]=0,[2]=0,[3]=0,[4]=0}
+    local times= {[1]=0,[2]=0,[3]=0,[4]=0,[5]=0}
     for i,v in pairs(info) do
         if v.type == 1 then 
             times[1] = times[1] + 1 
@@ -131,6 +134,7 @@ end
             times[4] = times[4] + 1 
         elseif v.type ==5 then 
             times[5] = times[5] + 1
+            isCallBack =false 
         end
     end
     for i,v in pairs(times) do 
@@ -142,9 +146,13 @@ end
     for i,v in pairs(data) do 
         Debug.Log(v.type .."  ".. v.time)
     end
-    LuaTimer.Add(3000, function ()
-        Debug.LogError("回调XXL")
-    end)
+    if isCallBack then 
+        self._enemy_Round = LuaTimer.Add(2000, function ()
+            self:CallBack()
+            Debug.LogError("回调")
+        end)
+    end
+    
     --判断传进来的数据是什么类型
     for i,v in pairs(data) do --遍历数据
         --血量
@@ -214,6 +222,10 @@ end
         --攻击
         elseif v.type == 4 then 
             self:PlayerAttack(v)
+        elseif v.type == 5 then 
+            LuaTimer.Add(500,function ()
+                self:EnemyRound()
+            end)
         else
             Debug.LogError("传进来的数据是错的")
         end
@@ -307,7 +319,9 @@ function TopFightPanel:EnemyGetHit()
     --怪物扣血
     self.EnemyData.Hp_cur = self.EnemyData.Hp_cur - self.PlayerData.Power
     --判断它是否死亡
-    if self.EnemyData.Hp_cur == 0 then
+    if self.EnemyData.Hp_cur <= 0 then
+        self.EnemyData.Hp_cur = 0
+        LuaTimer.Delete(self._enemy_Round)
         --怪物死亡逻辑
         LuaTimer.Add(150,function ()
             self:ShowWin()

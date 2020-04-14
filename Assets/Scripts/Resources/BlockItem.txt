@@ -5,7 +5,7 @@ local shiftX = 80
 local shiftY = -135
 local board = GameObject.Find("Canvas/GuildCrushWindow/Down/Board").transform
 local Obj = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Block").transform
-sprites = {}
+Obj.gameObject:SetActive(false)
 
 function BlockItem:new(i,j,blockType)
     local o = {}
@@ -29,17 +29,9 @@ function BlockItem:new(i,j,blockType)
     return o
 end
 
-function LoadSprites()
-    for i = 1,6,1 do
-        -- Textures/Crush/Icon
-        sprites[i] = Resources.Load("Textures/7Tex/Icon_"..i,Sprite)
-        -- sprites[i] = Resources.Load("Textures/7Tex/Icon","Icon_"..i,Sprite)
-    end
-end
 
 -- function Click(s)
 --     Debug.Log("i = "..s.i..",j = "..s.j..",type = "..s.type)
 -- end
 
-LoadSprites()
 return BlockItem
