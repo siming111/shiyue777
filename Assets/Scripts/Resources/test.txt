@@ -10,7 +10,7 @@ XXLPanel = _XXL:new()
 
 function Awake()
     local TopFightPanel = _Top:new()
-    TopFightPanel:Init()
+    -- TopFightPanel:Init()
     XXLPanel:Hello()
     -- local data = {
     --     [1] = {type = 1 , times = 1} --回血

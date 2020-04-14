@@ -47,7 +47,8 @@ function TopFightPanel:InitPanel()
     self.FireBall =self.C_Player.transform:Find("fireball").gameObject
     self.Player  = self.C_Player.transform:Find("Player").gameObject
     self.hp      = self.C_Player.transform:Find("Hp").gameObject
-    self.Energy  = self.C_Player.transform:Find("Hp").gameObject
+    self.Energy  = self.C_Player.transform:Find("Energy").gameObject
+    self.Shield  = self.C_Player.transform:Find("Shield").gameObject
     self.hitImage= self.FireBall.transform:Find("hitImage").gameObject
     self.FireBallImage = self.FireBall.transform:Find("fireballImage").gameObject
     self.hpAddText     = self.hp.transform:Find("hpAddText").gameObject:GetComponent(Text)
@@ -55,10 +56,12 @@ function TopFightPanel:InitPanel()
     self.Playerrect  = self.Player.transform
     self.FireBallrect= self.FireBall.transform
     self.BossAnim    = self.Boss:GetComponent(Animator)
-    self.PlayerAnim  = self.C_Player:GetComponent(Animator)
+    -- self.PlayerAnim  = self.C_Player:GetComponent(Animator)
     self.hitImage:SetActive(false)
     self.FireBallImage:SetActive(false)
     self.hp:SetActive(false)
+    self.Energy:SetActive(false)
+    self.Shield:SetActive(false)
 
     --怪物相关
     self.AttackCountDown_text = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/AttackCountDown_text"):GetComponent(Text)
@@ -77,7 +80,7 @@ function TopFightPanel:InitPanel()
     self.BossHpText= self.UIState.transform:Find("BossHpBg/BossHpText").gameObject:GetComponent(Text)
     self.Hp_text_Bar=self.UIState.transform:Find("Hp_text/Hp_text_Bar").gameObject:GetComponent(Image)
     self.Energy_text_Bar=self.UIState.transform:Find("Energy_text/Energy_text_Bar").gameObject:GetComponent(Image)
-    self.Shield_text_Bar=self.UIState.transform:Find("")
+    self.Shield_text_Bar=self.UIState.transform:Find("Shield_text/Shield_text_Bar").gameObject:GetComponent(Image)
 
     self.BossHpText.text = self.EnemyData.Hp_cur .. "/" .. self.EnemyData.Hp_total
     self.BossHpBar.fillAmount = self.EnemyData.Hp_cur/self.EnemyData.Hp_total
@@ -91,9 +94,16 @@ function TopFightPanel:InitPanel()
     self.Shield_text.text= self.PlayerData.Shield_cur --[[ "/" .. self.PlayerData.Shield_total]]
     self.Level_text.text = 1
 
-    -- self:UpdateRound(data) --假设现在传进来一个数据
-
+    local info = {
+         [1] = {type = 1 } --回血
+        ,[2] = {type = 2 } --回盾
+        ,[3] = {type = 3 } --加能量
+        ,[4] = {type = 4 } --攻击
+        ,[5] = {type = 1 }
+    }
     -- 测试专用
+    self:UpdateRound(info) --假设现在传进来一个数据
+    
     -- LuaTimer.Add(10000,function() 
     -- --怪物收到攻击逻辑处理
     --     self:UpdateRound(data)
@@ -101,12 +111,7 @@ function TopFightPanel:InitPanel()
 end
  
 
-    -- local data = {
-    --      [1] = {type = 1 , times = 1} --回血
-    --     ,[2] = {type = 2 , times = 1} --回盾
-    --     ,[3] = {type = 3 , times = 1} --加能量
-    --     ,[4] = {type = 4 , times = 1} --攻击
-    -- }
+    
 --更新回合数据（通过事件访问）
 function TopFightPanel:UpdateRound(info)
     if info == nil then
@@ -145,15 +150,21 @@ end
         --血量
         if v.type  == 1 then
             --先播放加血动画
-            self.hp:SetActive(true)
-            self.PlayerAnim:SetBool("Hpadd",true )
-            self.hpAddText.text = self.PlayerData.Item.Hp * v.time
-            -- self.hpAddText.text = self.PlayerData.Item.Hp 
-            self.player_AttackTimer = LuaTimer.Add(400,function()
-                self.hp:SetActive(false)
-                self.PlayerAnim:SetBool("Hpadd",false)
-                -- self.PlayerAnim:SetBool("Hpadd",true)
-            end)
+            -- self.hp:SetActive(true)
+            self.hpAddList = {}
+            for i= 1,v.time do 
+                LuaTimer.Add(300*(i-1),function ()
+                    self.hpAddList[i] = GameObject.Instantiate(self.hp,self.C_Player.transform)
+                    self.hpAddList[i]:SetActive(true) 
+                end )
+                LuaTimer.Add(300*(i-1)+600,function ()
+                    GameObject.Destroy(self.hpAddList[i])
+                end)
+            end            
+            -- self.player_AddHpTimer = LuaTimer.Add(600,function()
+            --     self.hp:SetActive(false)
+            --     -- self.PlayerAnim:SetBool("Hpadd",false)
+            -- end)
             self.PlayerData.HP_cur  = self.PlayerData.HP_cur + (self.PlayerData.Item.Hp * v.time)
             -- self.PlayerData.HP_cur  = self.PlayerData.HP_cur + (self.PlayerData.Item.Hp )
             --如果血量超过100
@@ -165,10 +176,42 @@ end
         --护盾
         elseif v.type == 2 then
             --播放加护盾动画
-            
-        --攻击
+            self.shieldAddList = {}
+            for i= 1,v.time do 
+                LuaTimer.Add(300*(i-1),function ()
+                    self.shieldAddList[i] = GameObject.Instantiate(self.Shield,self.C_Player.transform)
+                    self.shieldAddList[i]:SetActive(true) 
+                end )
+                LuaTimer.Add(300*(i-1)+500,function ()
+                    GameObject.Destroy(self.shieldAddList[i])
+                end)
+            end      
+            self.PlayerData.Shield_cur=self.PlayerData.Shield_cur + (self.PlayerData.Item.Shield * v.time)
+            if self.PlayerData.Shield_cur >= self.PlayerData.Shield_total then 
+                self.PlayerData.Shield_cur = self.PlayerData.Shield_total
+            end
+            self.Shield_text.text = self.PlayerData.Shield_cur
+            self.Shield_text_Bar.fillAmount = self.PlayerData.Shield_cur / self.PlayerData.Shield_total
+        --能量
         elseif v.type == 3 then
-
+            --播放加护盾动画
+            self.energyAddList = {}
+            for i= 1,v.time do 
+                LuaTimer.Add(250*(i-1),function ()
+                    self.energyAddList[i] = GameObject.Instantiate(self.Energy,self.C_Player.transform)
+                    self.energyAddList[i]:SetActive(true) 
+                end )
+                LuaTimer.Add(250+700*(i),function ()
+                    GameObject.Destroy(self.energyAddList[i])
+                end)
+            end      
+            self.PlayerData.Energy_cur=self.PlayerData.Energy_cur + (self.PlayerData.Item.Energy * v.time)
+            if self.PlayerData.Energy_cur >= self.PlayerData.Energy_total then 
+                self.PlayerData.Energy_cur = self.PlayerData.Energy_total
+            end
+            self.Energy_text.text = self.PlayerData.Energy_cur
+            self.Energy_text_Bar.fillAmount = self.PlayerData.Energy_cur / self.PlayerData.Energy_total
+        --攻击
         elseif v.type == 4 then 
             self:PlayerAttack(v)
         else
@@ -188,7 +231,7 @@ end
 function TopFightPanel:_PlayerAttack()
     self.playerMoveCur = self.playerMoveCur or  0  --玩家移动的计数
     self.playerMoveCount=self.playerMoveCount or 20--玩家移动的总步数
-    self.playerMoveOffSet = self.playerMoveOffSet or Vector3(20,0,0) 
+    self.playerMoveOffSet = self.playerMoveOffSet or Vector3(12,0,0) 
     self.FireBallStartPosition  = self.FireBallrect.localPosition
     self.playerRoteOffSet = 0
     self.player_MoveTimer = LuaTimer.Add(0,10,function()
@@ -283,7 +326,7 @@ function TopFightPanel:EnemyHpLoading()
         if self._enemyHpLoading then  
             --怪物扣完血之后,开始怪物的回合
             LuaTimer.Add(200,function()
-                self:EnemyRound()
+                -- self:EnemyRound()
             end)
             LuaTimer.Delete(self._enemyHpLoading)
             self._enemyHpLoading = nil 

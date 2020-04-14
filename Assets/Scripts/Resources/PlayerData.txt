@@ -16,7 +16,7 @@ local PlayerDate ={
     ,Item = {
         Hp = 25         --血量+25
         ,Shield = 20    --护盾+20
-        ,Energt = 15    --能量+15
+        ,Energy = 15    --能量+15
     }
 }
 return PlayerDate
