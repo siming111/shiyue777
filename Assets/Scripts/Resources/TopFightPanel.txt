@@ -172,6 +172,7 @@ function TopFightPanel:UpdateRound(info)
     local CallBackType = 1 --1.为道具回调 ， 2 为攻击回调
     local data = {}
     local times= {[1]=0,[2]=0,[3]=0,[4]=0,[5]=0}
+    local isFirstClick = info.isFirstClick--小小的传参
     for i,v in pairs(info) do
         if(type(v)=="table")then--小小的修改
             if v.type == 1 then 
@@ -195,9 +196,9 @@ function TopFightPanel:UpdateRound(info)
         end
     end
 
-    for i,v in pairs(data) do 
-        Debug.Log(v.type .."  ".. v.time)
-    end
+    -- for i,v in pairs(data) do 
+    --     Debug.Log(v.type .."  ".. v.time)
+    -- end
     if isCallBack then 
         if CallBackType == 2  then 
             self._enemy_Round = LuaTimer.Add(1500, function ()
@@ -284,13 +285,9 @@ function TopFightPanel:UpdateRound(info)
             -- self.SelectPanel:SetActive(true)
             self:PlayerAttack(v)
         elseif v.type == 5 then
-            if self.is_init then 
-                self.is_init= false
-            else 
-                LuaTimer.Add(500,function ()
+            LuaTimer.Add(500,function ()
                     self:EnemyRound()
-                end)
-            end
+            end)
         else
             Debug.LogError("传进来的数据是错的")
         end
