@@ -8,6 +8,6 @@ local EnemyData ={
     ,Hp_total  =  1000     --血量
 
     ,Hp_cur = 1000
-    ,FightRound_cur = 5 
+    ,FightRound_cur = 4 
 }
 return EnemyData
