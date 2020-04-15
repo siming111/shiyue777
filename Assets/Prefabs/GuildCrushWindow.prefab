@@ -511,7 +511,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1506035677665606
 GameObject:
   m_ObjectHideFlags: 1
@@ -995,7 +995,7 @@ Animator:
   m_GameObject: {fileID: 1412918737938562}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1661dd72484473e40a0e2d17ab1c87a7, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1012,7 +1012,7 @@ Animator:
   m_GameObject: {fileID: 1949082197854584}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: eb4621b6dc2e2f94db858d583c18c6b8, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1029,7 +1029,7 @@ Animator:
   m_GameObject: {fileID: 1283244814958640}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 52e753421f8e3b346a05ef42cc480744, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1046,7 +1046,7 @@ Animator:
   m_GameObject: {fileID: 1744395163040182}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b86c95f25b1feee43a2cfff8bb8e2a67, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1063,7 +1063,7 @@ Animator:
   m_GameObject: {fileID: 1535880342314866}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8e6ad80bb357b0640b01f881eaef711b, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1291,7 +1291,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 30c00704009d61d4e82f30e714448bde, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3bc3c52fbdf613245911628154c13c69, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3179,8 +3179,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 7.4000244, y: -83.099976}
-  m_SizeDelta: {x: -117.8, y: -206.6}
+  m_AnchoredPosition: {x: 9.950012, y: -75.099976}
+  m_SizeDelta: {x: -213.1, y: -180.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224296719795132330
 RectTransform:
@@ -3637,8 +3637,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 26, y: -95.95001}
-  m_SizeDelta: {x: 1245, y: 1038.8}
+  m_AnchoredPosition: {x: -55, y: -73}
+  m_SizeDelta: {x: 1282, y: 1069.7}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224711010056220708
 RectTransform:

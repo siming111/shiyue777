@@ -173,19 +173,21 @@ function TopFightPanel:UpdateRound(info)
     local data = {}
     local times= {[1]=0,[2]=0,[3]=0,[4]=0,[5]=0}
     for i,v in pairs(info) do
-        if v.type == 1 then 
-            times[1] = times[1] + 1 
-        elseif v.type ==2 then 
-            times[2] = times[2] + 1
-        elseif v.type ==3 then 
-            times[3] = times[3] + 1 
-        elseif v.type ==4 then 
-            times[4] = times[4] + 1 
-            CallBackType = 2 
-        elseif v.type ==5 then 
-            times[5] = times[5] + 1
-            isCallBack =false 
-        end
+        if(type(v)=="table")then--小小的修改
+            if v.type == 1 then 
+                times[1] = times[1] + 1 
+            elseif v.type ==2 then 
+                times[2] = times[2] + 1
+            elseif v.type ==3 then 
+                times[3] = times[3] + 1 
+            elseif v.type ==4 then 
+                times[4] = times[4] + 1 
+                CallBackType = 2 
+            elseif v.type ==5 then 
+                times[5] = times[5] + 1
+                isCallBack =false 
+            end
+        end--小小的修改
     end
     for i,v in pairs(times) do 
         if v ~= 0 then 
