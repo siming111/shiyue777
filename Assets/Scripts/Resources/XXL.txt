@@ -117,9 +117,9 @@ function XXL:Click(blockItem)
         then
             XXL:CancelSelectBlock(clickBlocks.firstBlock)
         else
-            -- if((clickBlocks.firstBlock.i==blockItem.i and math.abs(clickBlocks.firstBlock.j-blockItem.j)==1) or
-            -- (clickBlocks.firstBlock.j==blockItem.j and math.abs(clickBlocks.firstBlock.i-blockItem.i)==1))--两个砖块是否相邻
-            if(true)
+            if((clickBlocks.firstBlock.i==blockItem.i and math.abs(clickBlocks.firstBlock.j-blockItem.j)==1) or
+            (clickBlocks.firstBlock.j==blockItem.j and math.abs(clickBlocks.firstBlock.i-blockItem.i)==1))--两个砖块是否相邻
+            -- if(true)
             then
                 clickBlocks.secondBlock = blockItems[i][j]
                 clickBlocks.firstBlock.selectImage.gameObject:SetActive(false)
