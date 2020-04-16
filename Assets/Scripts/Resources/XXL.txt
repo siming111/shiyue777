@@ -272,7 +272,7 @@ function XXL:Fall()--砖块掉落
                             else
                                 selectPanel:SetActive(false)
                                 -- Debug.LogError("!!!!进入FALL 稳态")
-                                TopFightPanel:GetInstance():UpdateRound({[1] = {type = 5 }})
+                                TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
                             end
 
                         end
@@ -428,7 +428,7 @@ function XXL:IsOK()
     end
     -- if #self.fightData ==0 then 
     --     Debug.LogError("!!!!进入FALL 稳态")
-    --     TopFightPanel:GetInstance():UpdateRound({[1] = { type = 5 }})
+    --     TopFightPanel:GetInstance():UpdateRound({[1] = { type = 13 }})
     -- end
     return nil
     -- if(OK == true)
