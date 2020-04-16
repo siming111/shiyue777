@@ -9,6 +9,7 @@ local maxJ = 8
 blockItems = {}
 clickBlocks = {}
 positionTable = {}
+local AnimatorTable = {}
 function XXL:new()
     local o = {}
     setmetatable( o, { __index = self })
@@ -65,8 +66,8 @@ end
 
 function XXL:InitPositionTable()
     local space = 129
-    local shiftX = 66
-    local shiftY = -23
+    local shiftX = 107
+    local shiftY = -62
     for i=1-maxI,maxI,1 do
         positionTable[i] ={}
         for j=1,maxJ,1 do
@@ -135,17 +136,21 @@ function XXL:Click(blockItem)
                 LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time):setOnComplete(
                     function()
                         if(XXL:Judge())then
-                            local s = ""
-                            for key,value in pairs(self.fightData) do
-                                s = s .. "{"
-                                for key1,value1 in pairs(value) do
-                                    s = s ..key1.."="..value1..","
-                                end
-                                s = s .. "},"
-                            end
-                            Debug.Log(s)
+                            -- local s = ""
+                            -- for key,value in pairs(self.fightData) do
+                            --     s = s .. "{"
+                            --     for key1,value1 in pairs(value) do
+                            --         s = s ..key1.."="..value1..","
+                            --     end
+                            --     s = s .. "},"
+                            -- end
+                            -- Debug.Log(s)
                             self.fightData.isFirstClick = true
-                            TopFightPanel:GetInstance():UpdateRound(self.fightData)
+                            LuaTimer.Add(1200,
+                                function()
+                                    TopFightPanel:GetInstance():UpdateRound(self.fightData)
+                                end
+                            )
                             -- XXL:Fall()--砖块掉落
                         else
                             ---------------------
@@ -232,16 +237,21 @@ function XXL:Judge()
 
     -- s = ""
     if(clearBlocks)then
-        for key, value in pairs(clearBlocks) do  
-            for key1, value1 in pairs(value) do
-                -- s = s.."{"
-                for key2, value2 in pairs(value1) do
-                    -- s = s.."i"..value2.i.."j"..value2.j.."t"..value2.blockType..","
-                    if(blockItems[value2.i][value2.j] ~= nil)then
-                        XXL:DestroyBlock(value2)
-                    end
-                end
-                -- s = s.."}\n"
+        -- for key, value in pairs(clearBlocks) do  
+        --     for key1, value1 in pairs(value) do
+        --         -- s = s.."{"
+        --         for key2, value2 in pairs(value1) do
+        --             -- s = s.."i"..value2.i.."j"..value2.j.."t"..value2.blockType..","
+        --             if(blockItems[value2.i][value2.j] ~= nil)then
+        --                 XXL:DestroyBlock(value2)
+        --             end
+        --         end
+        --         -- s = s.."}\n"
+        --     end
+        -- end
+        for key,value in pairs(singleClearBlocks) do
+            for key1,value1 in pairs(value) do
+                XXL:DestroyBlock(value1)
             end
         end
         -- Debug.Log(s)
@@ -267,11 +277,18 @@ function XXL:Fall()--砖块掉落
                         function()
                             if(XXL:Judge())then
                                 self.fightData.isFirstClick = false
-                                TopFightPanel:GetInstance():UpdateRound(self.fightData)
+                                LuaTimer.Add(1200,
+                                function()
+                                    TopFightPanel:GetInstance():UpdateRound(self.fightData)
+                                end
+                                )
                                 -- XXL:Fall()
                             else
                                 selectPanel:SetActive(false)
                                 -- Debug.LogError("!!!!进入FALL 稳态")
+                                if(TopFightPanel.EnemyData.Hp_cur)<=900 then
+                                    XXL:SpecialEvent()
+                                end
                                 TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
                             end
 
@@ -299,7 +316,10 @@ end
 
 function XXL:DestroyBlock(blockItem)
     blockItems[blockItem.i][blockItem.j] = nil
-    GameObject.Destroy(blockItem.block.gameObject)
+    blockItem.block.transform:GetComponent(Animator):SetBool("IsDes",true)
+    LuaTimer.Add(2000,function ()
+        GameObject.Destroy(blockItem.block.gameObject)
+    end)
 end
 
 function XXL:PrintClearBlock(clearBlocks)
@@ -454,5 +474,16 @@ function XXL:Show()
     print(s)
 end
 
+function XXL:SpecialEvent()
+    Debug.Log("SpecialEvent!")
+    for i = 1,7,1 do
+        blockItems[i][1].blockType = blockItems[i][1].blockType*(blockItems[i][1].i+blockItems[i][1].j)
+    end
+    for i = 1,7,1 do
+        blockItems[i][8].blockType = blockItems[i][8].blockType*(blockItems[i][8].i+blockItems[i][8].j)
+    end
+    GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock1"):SetActive(true)
+    GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock2"):SetActive(true)
+end
 
 return XXL
