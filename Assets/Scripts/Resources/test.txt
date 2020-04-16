@@ -4,14 +4,27 @@ UnityEngine.Time.fixedDeltaTime = 0.1
 -- import "System.Collections";
 -- import "System.Collections.Generic";
 require "EventSystem"
+local playerData = require "PlayerData"
+local EnemyData  = require "EnemyData"
 local _XXL = require "XXL"
 -- local _Top = require "TopFightPanel"
 XXLPanel = _XXL:new()
 sprites = {}
 
 function Awake()
-    -- local TopFightPanel = _Top:new()
-    -- TopFightPanel:Init()
+    playerData.Item.Hp = TestPanel.p_hp
+    playerData.Item.Shield = TestPanel.p_shield
+    playerData.Item.Energy = TestPanel.p_energy
+    playerData.Power = TestPanel.p_power
+    playerData.Hp_total = TestPanel.p_hp_total
+    playerData.Shield_total= TestPanel.p_shield_total
+    playerData.Energy_total= TestPanel.p_energy_total
+
+    EnemyData.Hp_total= TestPanel.b_hp_total
+    EnemyData.Power= TestPanel.b_power
+    EnemyData.FightRound= TestPanel.b_fight_round
+    
+
     XXLPanel:Hello()
     -- local data = {
     --     [1] = {type = 1 , times = 1} --回血

@@ -24,6 +24,9 @@ function XXL:Hello()
         Debug.Log("lllllllllllll")
     end
     selectPanel = GameObject.Find("Canvas/GuildCrushWindow/Down/SelectPanel")
+    local Down = GameObject.Find("Canvas/GuildCrushWindow/Down")
+    self.BoardImage = Down.transform:Find("Board").gameObject
+    self.BoardImage:SetActive(true)
     for i=1,maxI,1 do
         blockItems[i] ={}
         for j=1,maxJ,1 do

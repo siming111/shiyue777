@@ -8,6 +8,7 @@ namespace SLua {
 				Lua_LeanTween.reg,
 				Lua_LTDescr.reg,
 				Lua_LoadScene.reg,
+				Lua_TestPanel.reg,
 				Lua_Custom.reg,
 				Lua_Custom_IFoo.reg,
 				Lua_Deleg.reg,

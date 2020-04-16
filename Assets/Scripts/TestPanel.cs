@@ -3,20 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SLua;
 
+[CustomLuaClass]
 public class TestPanel : MonoBehaviour {
 
-    public float p_hp;
-    public float p_shield;
-    public float p_energy;
-    public float p_power;
-    public float p_hp_total;
-    public float p_shield_total;
-    public float p_energy_total;
-    public float b_hp_total;
-    public float b_power;
-    public float b_fight_round;
+    public static float p_hp;
+    public static float p_shield;
+    public static float p_energy;
+    public static float p_power;
+    public static float p_hp_total;
+    public static float p_shield_total;
+    public static float p_energy_total;
+    public static float b_hp_total;
+    public static float b_power;
+    public static float b_fight_round;
 	// Use this for initialization
+
 	void Start () {
         GameObject.Find("Canvas/TestPanel/TestField/GameObject/InputField").GetComponent<InputField>().text = "25";
         GameObject.Find("Canvas/TestPanel/TestField/GameObject1/InputField").GetComponent<InputField>().text = "20";
