@@ -155,6 +155,10 @@ function TopFightPanel:InitPanel()
     self.EnergyActiveBtn.onClick:AddListener(
         function()
             self.EnergyActiveBtn= true
+            self.Shield_text.text = self.PlayerData.Shield_cur
+            self.Shield_text_Bar.fillAmount = self.PlayerData.Shield_cur / self.PlayerData.Shield_total
+            self.EnergyActive.gameObject:SetActive(false)
+            self.EnergytextObj:SetActive(true)
             Debug.Log(self.is_Energy)
         end
     )
