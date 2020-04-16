@@ -1,0 +1,21 @@
+local BlockTypeBuilder = BlockTypeBuilder or {}
+
+local hp = 23
+local sheild = hp + 19
+local energy = sheild + 18
+local power = energy + 40
+
+function BlockTypeBuilder:GetType()
+    local index = math.random(power)
+    if(index<=hp)then
+        return 1
+        elseif(index<=sheild)then
+            return 2
+            elseif(index<=energy)then
+                return 3
+                elseif(index<=power)then 
+                    return 4
+                end
+end
+
+return BlockTypeBuilder

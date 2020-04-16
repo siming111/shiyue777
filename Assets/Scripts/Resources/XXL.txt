@@ -219,9 +219,10 @@ function XXL:Judge()
                 isFirstBlock = true
             end
         end
+        local t = value[1].blockType + (num-3)*typeNumber
         if(isFirstBlock)then
             table.insert(self.fightData,self.fightData[1])
-            self.fightData[1] = {type = value[1].blockType,number = num}
+            self.fightData[1] = {type = t,number = num}
             -- Debug.Log("change!!!!!!!!!!!!!!!!!!")
         else
             table.insert(self.fightData,{type = value[1].blockType,number = num})
