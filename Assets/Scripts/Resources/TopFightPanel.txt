@@ -115,6 +115,9 @@ function TopFightPanel:InitPanel()
     --UI
     self.UIState     = GameObject.Find("GuildCrushWindow/TopPanel/UIState")
     self.Hp_text     = self.UIState.transform:Find("Hp_text/Hp_text").gameObject:GetComponent(Text)
+    self.EnergytextObj= self.UIState.transform:Find("Energy_text").gameObject
+    self.FirstClickEnergy = self.UIState.transform:Find("FirstClickEnergy").gameObject
+    self.isfirstClickEnergy =true
     self.Energy_text = self.UIState.transform:Find("Energy_text/Energy_text").gameObject:GetComponent(Text)
     self.Shield_text = self.UIState.transform:Find("Shield_text/Shield_text").gameObject:GetComponent(Text)
     self.Level_text  = self.UIState.transform:Find("Level_text/Level_text (1)").gameObject:GetComponent(Text)
@@ -124,6 +127,8 @@ function TopFightPanel:InitPanel()
     self.BossHpLoad= self.UIState.transform:Find("BossHpBg/BossHpLoad").gameObject:GetComponent(Image)
     self.BossHpText= self.UIState.transform:Find("BossHpBg/BossHpText").gameObject:GetComponent(Text)
     self.Hp_text_Bar=self.UIState.transform:Find("Hp_text/Hp_text_Bar").gameObject:GetComponent(Image)
+    self.EnergyActive=self.UIState.transform:Find("EnegyActive")
+    self.EnergyActiveBtn = self.EnergyActive.gameObject:GetComponent(Button)
     self.Energy_text_Bar=self.UIState.transform:Find("Energy_text/Energy_text_Bar").gameObject:GetComponent(Image)
     self.Shield_text_Bar=self.UIState.transform:Find("Shield_text/Shield_text_Bar").gameObject:GetComponent(Image)
 
@@ -141,6 +146,15 @@ function TopFightPanel:InitPanel()
     self.Level_text.text = 1
     
     self.is_init = true
+    
+    --是否有能量buff状态
+    self.is_Energy = false
+    self.EnergyActiveBtn.onClick:AddListener(
+        function()
+            self.EnergyActiveBtn= true
+            Debug.Log(self.is_Energy)
+        end
+    )
     -- local info = {
     --      [1] = {type = 1 } --回血
     --     ,[2] = {type = 2 } --回盾
@@ -156,11 +170,10 @@ function TopFightPanel:InitPanel()
     --     self:UpdateRound(data)
     -- end)
 end
- 
+
 function TopFightPanel:CallBack()
     XXLPanel:Fall()
 end
-    
 --更新回合数据（通过事件访问）
 function TopFightPanel:UpdateRound(info)
     
@@ -277,6 +290,9 @@ function TopFightPanel:UpdateRound(info)
             self.PlayerData.Energy_cur=self.PlayerData.Energy_cur + (self.PlayerData.Item.Energy * v.time)
             if self.PlayerData.Energy_cur >= self.PlayerData.Energy_total then 
                 self.PlayerData.Energy_cur = self.PlayerData.Energy_total
+                --显示能量按钮
+                self.EnergyActive.gameObject:SetActive(true)
+                self.EnergytextObj:SetActive(false)
             end
             self.Energy_text.text = self.PlayerData.Energy_cur
             self.Energy_text_Bar.fillAmount = self.PlayerData.Energy_cur / self.PlayerData.Energy_total

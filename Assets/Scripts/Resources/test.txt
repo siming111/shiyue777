@@ -5,12 +5,12 @@ UnityEngine.Time.fixedDeltaTime = 0.1
 -- import "System.Collections.Generic";
 require "EventSystem"
 local _XXL = require "XXL"
-local _Top = require "TopFightPanel"
+-- local _Top = require "TopFightPanel"
 XXLPanel = _XXL:new()
 sprites = {}
 
 function Awake()
-    local TopFightPanel = _Top:new()
+    -- local TopFightPanel = _Top:new()
     -- TopFightPanel:Init()
     XXLPanel:Hello()
     -- local data = {
