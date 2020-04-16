@@ -151,7 +151,7 @@ function XXL:Click(blockItem)
                             ---------------------
                             -- selectPanel:SetActive(false)
                             -- Debug.LogError("!!!!进入FALL 稳态")
-                            -- TopFightPanel:GetInstance():UpdateRound({[1] = {type = 5 }})
+                            -- TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
                             LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], time)
                             LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time):setOnComplete(
                                 function()
