@@ -65,8 +65,8 @@ end
 
 function XXL:InitPositionTable()
     local space = 129
-    local shiftX = 210
-    local shiftY = -134
+    local shiftX = 66
+    local shiftY = -23
     for i=1-maxI,maxI,1 do
         positionTable[i] ={}
         for j=1,maxJ,1 do

@@ -5,6 +5,7 @@ local shiftX = 80
 local shiftY = -135
 local board = GameObject.Find("Canvas/GuildCrushWindow/Down/Board").transform
 local Obj = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Block").transform
+local blockBoard = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/BlockBoard").transform
 Obj.gameObject:SetActive(false)
 
 function BlockItem:new(i,j,blockType)
@@ -13,7 +14,7 @@ function BlockItem:new(i,j,blockType)
     o.i = i
     o.j = j
     o.blockType = blockType
-    o.block =  GameObject.Instantiate(Obj, board)
+    o.block =  GameObject.Instantiate(Obj, blockBoard)
     o.block.gameObject:SetActive(true)
     o.selectImage = o.block.transform:Find("selectImage")
     o.selectImage.gameObject:GetComponent(UnityEngine.UI.Image).sprite = Resources.Load("Textures/7Tex/Pause",Sprite)
