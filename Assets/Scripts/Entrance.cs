@@ -8,21 +8,21 @@ using System.IO;
 public class Entrance : MonoBehaviour
 {
     private LuaFunction updateFunction = null;
+    private LuaFunction luaFunction = null;
     void Start()
     {
         LuaSvr svr = new LuaSvr();// 如果不先进行某个LuaSvr的初始化的话,下面的mianState会爆一个为null的错误..
 
-        LuaFunction luaFunction = null;
         //LuaSvr.mainState.loaderDelegate += LuaReourcesFileLoader;
         svr.init(null, () => // 如果不用init方法初始化的话,在Lua中是不能import的
         {
             svr.start("test");
             luaFunction = LuaSvr.mainState.getFunction("Awake");
             updateFunction = LuaSvr.mainState.getFunction("Update");
-            if (luaFunction != null)
-            {
-                luaFunction.call();
-            }
+            //if (luaFunction != null)
+            //{
+            //    luaFunction.call();
+            //}
         });
         LeanTween.move(gameObject, new Vector3(0f, 1f, 2f), 1f);
     }
@@ -31,6 +31,11 @@ public class Entrance : MonoBehaviour
     {
         //updateFunction.call();
         LTDescr ltdescr = new LTDescr();
+    }
+
+    public void start()
+    {
+        luaFunction.call();
     }
 
     // SLua Loader代理方法
