@@ -9,10 +9,13 @@ local maxJ = 8
 blockItems = {}
 clickBlocks = {}
 positionTable = {}
-local AnimatorTable = {}
 function XXL:new()
     local o = {}
     setmetatable( o, { __index = self })
+    self.animatorTable = {}
+    -- for i = 1,maxI,1 do
+    --     table.insert(self.animatorTable,{})
+    -- end
     return o   
 end
 
@@ -32,6 +35,7 @@ function XXL:Hello()
         blockItems[i] ={}
         for j=1,maxJ,1 do
             local blockItem = BlockItem:new(i,j,math.random(typeNumber))
+            self.animatorTable[tostring(blockItem)] = blockItem.block:GetComponent(Animator)
             local btn = blockItem.block
             blockItems[i][j] = blockItem
             btn:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
@@ -279,6 +283,7 @@ function XXL:Fall()--砖块掉落
                                 self.fightData.isFirstClick = false
                                 LuaTimer.Add(1200,
                                 function()
+                                    -- Debug.LogError("调用延时~~")
                                     TopFightPanel:GetInstance():UpdateRound(self.fightData)
                                 end
                                 )
@@ -301,6 +306,7 @@ function XXL:Fall()--砖块掉落
         end
         for i = 1,empty,1 do
             local blockItem = BlockItem:new(1-i,j,math.random(typeNumber))
+            self.animatorTable[tostring(blockItem)] = blockItem.block:GetComponent(Animator)
             LeanTween.move(blockItem.block,positionTable[1-i+empty][j],time)
             XXL:MoveBlock(blockItem,1-i+empty,j)
             blockItem.block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
@@ -315,11 +321,13 @@ function XXL:Fall()--砖块掉落
 end
 
 function XXL:DestroyBlock(blockItem)
-    blockItems[blockItem.i][blockItem.j] = nil
-    blockItem.block.transform:GetComponent(Animator):SetBool("IsDes",true)
-    LuaTimer.Add(2000,function ()
+    print("1~~~~~~~~~")
+    self.animatorTable[tostring(blockItem)]:SetBool("IsDes",true)
+    LuaTimer.Add(1200,function ()
         GameObject.Destroy(blockItem.block.gameObject)
     end)
+    blockItems[blockItem.i][blockItem.j] = nil
+    print("2~~~~~~~~~")
 end
 
 function XXL:PrintClearBlock(clearBlocks)
@@ -477,10 +485,10 @@ end
 function XXL:SpecialEvent()
     Debug.Log("SpecialEvent!")
     for i = 1,7,1 do
-        blockItems[i][1].blockType = blockItems[i][1].blockType*(blockItems[i][1].i+blockItems[i][1].j)
+        blockItems[i][1].blockType = blockItems[i][1].blockType*(blockItems[i][1].i+blockItems[i][1].j+3)
     end
     for i = 1,7,1 do
-        blockItems[i][8].blockType = blockItems[i][8].blockType*(blockItems[i][8].i+blockItems[i][8].j)
+        blockItems[i][8].blockType = blockItems[i][8].blockType*(blockItems[i][8].i+blockItems[i][8].j+3)
     end
     GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock1"):SetActive(true)
     GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock2"):SetActive(true)
