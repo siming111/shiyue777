@@ -490,8 +490,8 @@ function XXL:SpecialEvent()
     for i = 1,7,1 do
         blockItems[i][8].blockType = blockItems[i][8].blockType*(blockItems[i][8].i+blockItems[i][8].j+3)
     end
-    GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock1"):SetActive(true)
-    GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock2"):SetActive(true)
+    -- GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock1"):SetActive(true)
+    -- GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock2"):SetActive(true)
 end
 
 return XXL
