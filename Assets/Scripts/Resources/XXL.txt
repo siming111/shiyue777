@@ -321,13 +321,13 @@ function XXL:Fall()--砖块掉落
 end
 
 function XXL:DestroyBlock(blockItem)
-    print("1~~~~~~~~~")
+    -- print("1~~~~~~~~~")
     self.animatorTable[tostring(blockItem)]:SetBool("IsDes",true)
     LuaTimer.Add(1200,function ()
         GameObject.Destroy(blockItem.block.gameObject)
     end)
     blockItems[blockItem.i][blockItem.j] = nil
-    print("2~~~~~~~~~")
+    -- print("2~~~~~~~~~")
 end
 
 function XXL:PrintClearBlock(clearBlocks)
@@ -483,7 +483,7 @@ function XXL:Show()
 end
 
 function XXL:SpecialEvent()
-    Debug.Log("SpecialEvent!")
+    -- Debug.Log("SpecialEvent!")
     for i = 1,7,1 do
         blockItems[i][1].blockType = blockItems[i][1].blockType*(blockItems[i][1].i+blockItems[i][1].j+3)
     end
