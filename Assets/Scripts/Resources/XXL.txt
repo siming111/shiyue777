@@ -188,7 +188,7 @@ function XXL:Judge()
     -- end
     local clearBlocks = XXL:IsOK666()--666工作室版本
     local blockNumberTable = {}
-    local singleClearBlocks = {}
+    singleClearBlocks = {}
     self.fightData = {}
     if(clearBlocks)then
         for key, value in pairs(clearBlocks) do
@@ -248,6 +248,8 @@ function XXL:Judge()
 end
 
 function XXL:Fall()--砖块掉落
+    --singleClearBlocks存放了应该被消除的砖块信息，
+    --与clickBlock的firstBlock比较可以确定新生成砖块位置
     flag = true--是否添加动画结束事件标签
     for j=1,maxJ,1 do
         local empty = 0
