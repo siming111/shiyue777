@@ -170,7 +170,7 @@ function TopFightPanel:InitPanel()
     -- 测试专用
     -- LuaTimer.Add(1000,function() 
     -- --怪物收到攻击逻辑处理
-        self:UpdateRound(info)
+        -- self:UpdateRound(info)
     -- end)
 end
 
@@ -196,37 +196,48 @@ function TopFightPanel:UpdateRound(info)
     local isFirstClick = info.isFirstClick--小小的传参
     for i,v in ipairs(info) do
         if(type(v)=="table")then--小小的修改
-            if v.type == 1 then 
-                times[1] = times[1] + 1 
-            elseif v.type ==2 then 
-                times[2] = times[2] + 1
-            elseif v.type ==3 then 
-                times[3] = times[3] + 1 
-            elseif v.type ==4 then 
-                times[4] = times[4] + 1 
-                CallBackType = 2 
-            elseif v.type == 5 then 
-                times[5] = times[5]+1 
-            elseif v.type == 6 then 
-                times[6] = times[6]+1 
-            elseif v.type == 7 then 
-                times[7] = times[7]+1 
-            elseif v.type == 8 then 
-                times[8] = times[8]+1 
+            --晓源的版本
+            -- if v.type == 1 then 
+            --     times[1] = times[1] + 1 
+            -- elseif v.type ==2 then 
+            --     times[2] = times[2] + 1
+            -- elseif v.type ==3 then 
+            --     times[3] = times[3] + 1 
+            -- elseif v.type ==4 then 
+            --     times[4] = times[4] + 1 
+            --     CallBackType = 2 
+            -- elseif v.type == 5 then 
+            --     times[5] = times[5]+1 
+            -- elseif v.type == 6 then 
+            --     times[6] = times[6]+1 
+            -- elseif v.type == 7 then 
+            --     times[7] = times[7]+1 
+            -- elseif v.type == 8 then 
+            --     times[8] = times[8]+1 
+            --     CallBackType = 2
+            -- elseif v.type == 9 then 
+            --     times[9] = times[9]+1 
+            -- elseif v.type == 10 then 
+            --     times[10] = times[10]+1 
+            -- elseif v.type == 11 then 
+            --     times[11] = times[11]+1 
+            -- elseif v.type == 12 then 
+            --     times[12] = times[12]+1 
+            --     CallBackType = 2
+            -- elseif v.type ==13 then 
+            --     times[13] = times[13] + 1
+            --     isCallBack = false  
+            -- end
+            --晓源的版本
+            --小小的版本
+            times[v.type] = times[v.type] + 1
+            if(v.type%4==0)then
                 CallBackType = 2
-            elseif v.type == 9 then 
-                times[9] = times[9]+1 
-            elseif v.type == 10 then 
-                times[10] = times[10]+1 
-            elseif v.type == 11 then 
-                times[11] = times[11]+1 
-            elseif v.type == 12 then 
-                times[12] = times[12]+1 
-                CallBackType = 2
-            elseif v.type ==13 then 
-                times[13] = times[13] + 1
-                isCallBack =false  
             end
+            if(v.type==13)then
+                isCallBack = false
+            end
+            --小小的版本
         end--小小的修改
     end
     for i,v in pairs(times) do 
@@ -315,6 +326,7 @@ function TopFightPanel:UpdateRound(info)
                         self.is_Energy = false
                     else
                         self.shieldAddList[i] = GameObject.Instantiate(self.Shield,self.C_Player.transform)
+                        self.shieldAddList[i].transform:Find("ShieldText"):GetComponent(Text).text = addShield--小小的增加
                         self.shieldAddList[i]:SetActive(true) 
                     end
                 end )
