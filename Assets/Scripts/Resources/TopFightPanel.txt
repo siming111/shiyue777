@@ -161,8 +161,8 @@ function TopFightPanel:InitPanel()
         end
     )
     local info = {
-         [1] = {type = 1 } --回血
-        ,[2] = {type = 5 } --回盾
+         -- [1] = {type = 4} --回血
+        -- ,[2] = {type = 5 } --回盾
         -- ,[3] = {type = 9 } --加能量
         -- ,[4] = {type = 2 } --攻击
         -- ,[5] = {type = 1 }
@@ -264,18 +264,23 @@ function TopFightPanel:UpdateRound(info)
             elseif v.type == 9 then 
                 addHp = self.PlayerData.Item.Hp3
             end
+            if self.is_Energy then 
+                addHp = addHp * 1.5 
+                self.is_Energy=false
+            end
+
             for i= 1,v.time do 
                 local timer08_ = LuaTimer.Add(300*(i-1),function ()
-                    if self.is_Energy then
+                    -- if self.is_Energy then
                         self.hpAddList[i] = GameObject.Instantiate(self.hp,self.C_Player.transform)
-                        self.hpAddList[i].transform:Find("hpAddText"):GetComponent(Text).text = math.ceil(addHp * 1.5)
+                        self.hpAddList[i].transform:Find("hpAddText"):GetComponent(Text).text = math.floor(addHp)
                         self.hpAddList[i]:SetActive(true) 
-                        self.is_Energy =false--能量取消
+                        -- self.is_Energy =false--能量取消
                         --todo：增强棋盘取消
-                    else
-                        self.hpAddList[i] = GameObject.Instantiate(self.hp,self.C_Player.transform)
-                        self.hpAddList[i]:SetActive(true)
-                    end
+                    -- else
+                        -- self.hpAddList[i] = GameObject.Instantiate(self.hp,self.C_Player.transform)
+                        -- self.hpAddList[i]:SetActive(true)
+                    -- end
                 end )
                 -- local timer09_ = LuaTimer.Add(300*(i-1)+600,function ()
                     -- GameObject.Destroy(self.hpAddList[i])

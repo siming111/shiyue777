@@ -7,6 +7,7 @@ require "EventSystem"
 local playerData = require "PlayerData"
 local EnemyData  = require "EnemyData"
 local _XXL = require "XXL"
+_BlockTypeBuilder = require "BlockTypeBuilder"
 -- local _Top = require "TopFightPanel"
 XXLPanel = _XXL:new()
 sprites = {}
@@ -19,6 +20,13 @@ function Awake()
     playerData.Hp_total = TestPanel.p_hp_total
     playerData.Shield_total= TestPanel.p_shield_total
     playerData.Energy_total= TestPanel.p_energy_total
+
+    _BlockTypeBuilder.hp = TestPanel.n_hp
+    _BlockTypeBuilder.shield = TestPanel.n_shield + _BlockTypeBuilder.hp
+    _BlockTypeBuilder.energy = TestPanel.n_energy + _BlockTypeBuilder.shield
+    _BlockTypeBuilder.power = TestPanel.n_power + _BlockTypeBuilder.energy
+
+    print(_BlockTypeBuilder.hp.._BlockTypeBuilder.shield.._BlockTypeBuilder.energy.._BlockTypeBuilder.power)
 
     EnemyData.Hp_total= TestPanel.b_hp_total
     EnemyData.Power= TestPanel.b_power

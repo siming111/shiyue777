@@ -34,7 +34,7 @@ function XXL:Hello()
     for i=1,maxI,1 do
         blockItems[i] ={}
         for j=1,maxJ,1 do
-            local blockItem = BlockItem:new(i,j,math.random(typeNumber))
+            local blockItem = BlockItem:new(i,j,_BlockTypeBuilder:GetType())
             self.animatorTable[tostring(blockItem)] = blockItem.block:GetComponent(Animator)
             local btn = blockItem.block
             blockItems[i][j] = blockItem
@@ -152,6 +152,7 @@ function XXL:Click(blockItem)
                             self.fightData.isFirstClick = true
                             LuaTimer.Add(1200,
                                 function()
+                                    XXL:ShowFightData()
                                     TopFightPanel:GetInstance():UpdateRound(self.fightData)
                                 end
                             )
@@ -185,6 +186,14 @@ function XXL:Click(blockItem)
     -- Debug.Log("first:i="..clickBlocks.firstBlock.i..",j="..clickBlocks.firstBlock.j)
 end
 
+function XXL:ShowFightData()
+    s = "{"
+    for key,value in ipairs(self.fightData) do
+        s = s ..value.type.. " "
+    end
+    s = s.."}"
+    print(s)
+end
 
 function XXL:Judge()
     -- local clearBlocks = XXL:IsOK()--诗悦777版本
@@ -234,7 +243,7 @@ function XXL:Judge()
             self.fightData[1] = {type = t,number = num}
             -- Debug.Log("change!!!!!!!!!!!!!!!!!!")
         else
-            table.insert(self.fightData,{type = value[1].blockType,number = num})
+            table.insert(self.fightData,{type = t,number = num})
         end
     end
     -- Debug.Log(s)
@@ -254,6 +263,11 @@ function XXL:Judge()
         --     end
         -- end
         for key,value in pairs(singleClearBlocks) do
+            --singleClearBlocks存放了应该被消除的砖块信息，
+            --与clickBlock的firstBlock比较可以确定新生成砖块位置
+            if(#value>=4)then
+                XXL:NewTypeBlock()
+            end
             for key1,value1 in pairs(value) do
                 XXL:DestroyBlock(value1)
             end
@@ -265,9 +279,11 @@ function XXL:Judge()
     end
 end
 
+function XXL:NewTypeBlock()
+    Debug.Log("hello")
+end
+
 function XXL:Fall()--砖块掉落
-    --singleClearBlocks存放了应该被消除的砖块信息，
-    --与clickBlock的firstBlock比较可以确定新生成砖块位置
     flag = true--是否添加动画结束事件标签
     for j=1,maxJ,1 do
         local empty = 0
@@ -284,6 +300,7 @@ function XXL:Fall()--砖块掉落
                                 LuaTimer.Add(1200,
                                 function()
                                     -- Debug.LogError("调用延时~~")
+                                    XXL:ShowFightData()
                                     TopFightPanel:GetInstance():UpdateRound(self.fightData)
                                 end
                                 )
@@ -291,9 +308,10 @@ function XXL:Fall()--砖块掉落
                             else
                                 selectPanel:SetActive(false)
                                 -- Debug.LogError("!!!!进入FALL 稳态")
-                                if(TopFightPanel.EnemyData.Hp_cur)<=900 then
-                                    XXL:SpecialEvent()
-                                end
+                                -- if(TopFightPanel.EnemyData.Hpcur)<=900 then
+                                --     XXL:SpecialEvent()
+                                -- end
+                                XXL:ShowFightData()
                                 TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
                             end
 
@@ -305,7 +323,7 @@ function XXL:Fall()--砖块掉落
             end
         end
         for i = 1,empty,1 do
-            local blockItem = BlockItem:new(1-i,j,math.random(typeNumber))
+            local blockItem = BlockItem:new(1-i,j,_BlockTypeBuilder:GetType())
             self.animatorTable[tostring(blockItem)] = blockItem.block:GetComponent(Animator)
             LeanTween.move(blockItem.block,positionTable[1-i+empty][j],time)
             XXL:MoveBlock(blockItem,1-i+empty,j)
