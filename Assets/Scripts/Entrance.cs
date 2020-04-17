@@ -9,8 +9,10 @@ public class Entrance : MonoBehaviour
 {
     private LuaFunction updateFunction = null;
     private LuaFunction luaFunction = null;
+
     void Start()
     {
+
         LuaSvr svr = new LuaSvr();// 如果不先进行某个LuaSvr的初始化的话,下面的mianState会爆一个为null的错误..
 
         //LuaSvr.mainState.loaderDelegate += LuaReourcesFileLoader;
