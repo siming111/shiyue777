@@ -275,8 +275,8 @@ function TopFightPanel:UpdateRound(info)
             elseif v.type == 9 then 
                 addHp = self.PlayerData.Item.Hp3
             end
-            if self.is_Energy then 
-                addHp = addHp * 1.5 
+            if self.is_Energy then
+                addHp = math.floor(addHp * 1.5 )
                 self.is_Energy=false
             end
 
@@ -348,28 +348,33 @@ function TopFightPanel:UpdateRound(info)
             self.Shield_text_Bar.fillAmount = self.PlayerData.Shield_cur / self.PlayerData.Shield_total
         --能量
         elseif v.type == 3 or v.type == 7 or v.type == 11 then
-            self.energyAddList = {}
-            local addEnergy = self.PlayerData.Item.Energy
-            if v.type == 7 then 
-                addEnergy = self.PlayerData.Item.Energy2
-            elseif v.type == 11 then 
-                addEnergy = self.PlayerData.Item.Energy3
-            end
-            for i= 1,v.time do 
-                local timer2 = LuaTimer.Add(250*(i-1),function ()
-                    self.energyAddList[i] = GameObject.Instantiate(self.Energy,self.C_Player.transform)
-                    self.energyAddList[i]:SetActive(true) 
-                end )
-                local timer3 = LuaTimer.Add(250+700*(i),function ()
-                    GameObject.Destroy(self.energyAddList[i])
-                end )
-            end      
-            self.PlayerData.Energy_cur=self.PlayerData.Energy_cur + (addEnergy * v.time)
-            if self.PlayerData.Energy_cur >= self.PlayerData.Energy_total then 
-                self.PlayerData.Energy_cur = self.PlayerData.Energy_total
-                --显示能量按钮
-                self.EnergyActive.gameObject:SetActive(true)
-                self.EnergytextObj:SetActive(false)
+            if(not self.is_Energy)then
+                self.energyAddList = {}
+                local addEnergy = self.PlayerData.Item.Energy
+                if v.type == 7 then 
+                    addEnergy = self.PlayerData.Item.Energy2
+                elseif v.type == 11 then 
+                    addEnergy = self.PlayerData.Item.Energy3
+                end
+                for i= 1,v.time do 
+                    local timer2 = LuaTimer.Add(250*(i-1),function ()
+                        self.energyAddList[i] = GameObject.Instantiate(self.Energy,self.C_Player.transform)
+                        self.energyAddList[i]:SetActive(true) 
+                    end )
+                    local timer3 = LuaTimer.Add(250+700*(i),function ()
+                        GameObject.Destroy(self.energyAddList[i])
+                    end )
+                end      
+                self.PlayerData.Energy_cur=self.PlayerData.Energy_cur + (addEnergy * v.time)
+                if self.PlayerData.Energy_cur >= self.PlayerData.Energy_total then 
+                    self.PlayerData.Energy_cur = self.PlayerData.Energy_total
+                    --显示能量按钮
+                    self.EnergyActive.gameObject:SetActive(true)
+                    self.EnergytextObj:SetActive(false)
+                end
+            else
+                self.is_Energy = false
+                Debug.Log("123")
             end
             self.Energy_text.text = self.PlayerData.Energy_cur
             self.Energy_text_Bar.fillAmount = self.PlayerData.Energy_cur / self.PlayerData.Energy_total
