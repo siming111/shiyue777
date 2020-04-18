@@ -111,7 +111,8 @@ function TopFightPanel:InitPanel()
     self.AttackCountDown_text.text = self.EnemyData.FightRound_cur
     
     --UI
-    self.UIState     = GameObject.Find("GuildCrushWindow/TopPanel/UIState")
+    -- self.UIState     = GameObject.Find("GuildCrushWindow/TopPanel/UIState")
+    self.UIState     = GameObject.Find("GuildCrushWindow/UIState")--小小的修改
     self.Hp_text     = self.UIState.transform:Find("Hp_text/Hp_text").gameObject:GetComponent(Text)
     self.EnergytextObj= self.UIState.transform:Find("Energy_text").gameObject
     self.FirstClickEnergy = self.UIState.transform:Find("FirstClickEnergy").gameObject
@@ -121,16 +122,20 @@ function TopFightPanel:InitPanel()
     self.Level_text  = self.UIState.transform:Find("Level_text/Level_text (1)").gameObject:GetComponent(Text)
     
     --怪物相关组件
-    self.BossHpBar = self.UIState.transform:Find("BossHpBg/BossHpBar").gameObject:GetComponent(Image)
-    self.BossHpLoad= self.UIState.transform:Find("BossHpBg/BossHpLoad").gameObject:GetComponent(Image)
-    self.BossHpText= self.UIState.transform:Find("BossHpBg/BossHpText").gameObject:GetComponent(Text)
+    self.BossHpBg = GameObject.Find("GuildCrushWindow/BossHpBg")--小小的增加
+    -- self.BossHpBar = self.UIState.transform:Find("BossHpBg/BossHpBar").gameObject:GetComponent(Image)
+    self.BossHpBar = self.BossHpBg.transform:Find("BossHpBar").gameObject:GetComponent(Image)--小小的修改
+    -- self.BossHpLoad= self.UIState.transform:Find("BossHpBg/BossHpLoad").gameObject:GetComponent(Image)
+    self.BossHpLoad= self.BossHpBg.transform:Find("BossHpLoad").gameObject:GetComponent(Image)--小小的修改
+    -- self.BossHpText= self.UIState.transform:Find("BossHpBg/BossHpText").gameObject:GetComponent(Text)
+    self.BossHpText= self.BossHpBg.transform:Find("BossHpText").gameObject:GetComponent(Text)--小小的修改
     self.Hp_text_Bar=self.UIState.transform:Find("Hp_text/Hp_text_Bar").gameObject:GetComponent(Image)
     self.EnemyGetHitText =self.Main.transform:Find("TopPanel/Enemy/EnemyGetHitText").gameObject
     self.EnergyActive=self.UIState.transform:Find("EnegyActive")
     self.EnergyActiveBtn = self.EnergyActive.gameObject:GetComponent(Button)
     self.Energy_text_Bar=self.UIState.transform:Find("Energy_text/Energy_text_Bar").gameObject:GetComponent(Image)
     self.Shield_text_Bar=self.UIState.transform:Find("Shield_text/Shield_text_Bar").gameObject:GetComponent(Image)
-
+    self.topBg = GameObject.Find("GuildCrushWindow/Bg/TopBg")
     self.BossHpText.text = self.EnemyData.Hp_cur .. "/" .. self.EnemyData.Hp_total
     self.BossHpBar.fillAmount = self.EnemyData.Hp_cur/self.EnemyData.Hp_total
 
@@ -252,9 +257,15 @@ function TopFightPanel:UpdateRound(info)
 
     if isCallBack then 
         if CallBackType == 2  then 
-            local timer06_ = LuaTimer.Add(1500 * times[4] + 1500 * times[8] + 1500 * times[12], function ()
-                self:CallBack()
-            end)
+            if(self.is_Energy) then
+                LuaTimer.Add(5000, function ()
+                    self:CallBack()
+                end)
+            else
+                local timer06_ = LuaTimer.Add(1500 * times[4] + 1500 * times[8] + 1500 * times[12], function ()
+                    self:CallBack()
+                end)
+            end
         else
             local timer07_  = LuaTimer.Add(1000, function ()
                 self:CallBack()
@@ -359,6 +370,7 @@ function TopFightPanel:UpdateRound(info)
                 for i= 1,v.time do 
                     local timer2 = LuaTimer.Add(250*(i-1),function ()
                         self.energyAddList[i] = GameObject.Instantiate(self.Energy,self.C_Player.transform)
+                        self.energyAddList[i].transform:Find("EnergyAddText"):GetComponent(Text).text = addEnergy * v.time
                         self.energyAddList[i]:SetActive(true) 
                     end )
                     local timer3 = LuaTimer.Add(250+700*(i),function ()
@@ -384,6 +396,32 @@ function TopFightPanel:UpdateRound(info)
             for i = 1,v.time do
                 self.attackType[#self.attackType+1] = v.type
             end
+            --小小的增加
+            if(self.is_Energy)then--大招
+                self.PlayerAnim:SetBool("BigAttack",true)
+                LuaTimer.Add(3000,function()
+                    -- body
+                    self.is_Energy = false
+                    self.PlayerAnim:SetBool("BigAttack",false)
+                end)
+                LuaTimer.Add(5000,function()
+                    -- body
+                    self.BossAnim:SetBool("GetHit",true)
+                end)
+                LuaTimer.Add(6000,function()
+                    -- body
+                    self.BossAnim:SetBool("GetHit",false)
+                end)
+                LuaTimer.Add(3000,function()
+                    -- body
+                    self.topBg:GetComponent(Animator):SetBool("shake",true)
+                end)
+                LuaTimer.Add(6000,function()
+                    -- body
+                    self.topBg:GetComponent(Animator):SetBool("shake",false)
+                end)
+            end
+            --小小的增加
         elseif v.type == 13 then
             local timer4 = LuaTimer.Add(500,function ()
                     self:EnemyRound()
@@ -392,7 +430,12 @@ function TopFightPanel:UpdateRound(info)
             Debug.LogError("传进来的数据是错的")
         end
     end
-    self:PlayerAttack(self.attackTime)
+    -- self:PlayerAttack(self.attackTime)--小小的删除
+    --小小的增加
+    if(not self.is_Energy)then
+        self:PlayerAttack(self.attackTime)
+    end
+    --小小的增加
 end
 
 function TopFightPanel:PlayerAttack(attackTime)
