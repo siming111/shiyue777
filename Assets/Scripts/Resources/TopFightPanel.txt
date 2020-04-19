@@ -396,30 +396,9 @@ function TopFightPanel:UpdateRound(info)
             for i = 1,v.time do
                 self.attackType[#self.attackType+1] = v.type
             end
-            --小小的增加
-            if(self.is_Energy)then--大招
-                self.PlayerAnim:SetBool("BigAttack",true)
-                LuaTimer.Add(3000,function()
-                    -- body
-                    self.is_Energy = false
-                    self.PlayerAnim:SetBool("BigAttack",false)
-                end)
-                LuaTimer.Add(5000,function()
-                    -- body
-                    self.BossAnim:SetBool("GetHit",true)
-                end)
-                LuaTimer.Add(6000,function()
-                    -- body
-                    self.BossAnim:SetBool("GetHit",false)
-                end)
-                LuaTimer.Add(3000,function()
-                    -- body
-                    self.topBg:GetComponent(Animator):SetBool("shake",true)
-                end)
-                LuaTimer.Add(6000,function()
-                    -- body
-                    self.topBg:GetComponent(Animator):SetBool("shake",false)
-                end)
+            --小小的增加(单独在这里处理大招逻辑)
+            if self.is_Energy then--大招
+                self:BigAttack()
             end
             --小小的增加
         elseif v.type == 13 then
@@ -436,6 +415,32 @@ function TopFightPanel:UpdateRound(info)
         self:PlayerAttack(self.attackTime)
     end
     --小小的增加
+end
+
+function TopFightPanel:BigAttack()
+    self.PlayerAnim:SetBool("BigAttack",true)
+    LuaTimer.Add(3000,function()
+         -- body
+        self.is_Energy = false
+        self.PlayerAnim:SetBool("BigAttack",false)
+    end)
+    -- LuaTimer.Add(5000,function()
+        -- body
+        -- self.BossAnim:SetBool("GetHit",true)
+    -- end)
+    -- LuaTimer.Add(6000,function()
+        -- body
+        -- self.BossAnim:SetBool("GetHit",false)
+    -- end)
+    LuaTimer.Add(3000,function()
+        -- body
+        self:EnemyGetHit(self.PlayerData.big_attack_id)
+        self.topBg:GetComponent(Animator):SetBool("shake",true)
+    end)
+    LuaTimer.Add(6000,function()
+        -- body
+        self.topBg:GetComponent(Animator):SetBool("shake",false)
+    end)
 end
 
 function TopFightPanel:PlayerAttack(attackTime)
@@ -554,6 +559,10 @@ function TopFightPanel:EnemyGetHit(i)
         damage = math.ceil(self.PlayerData.Power * 1.3)
     elseif self.attackType[i] ==12 then 
         damage = math.ceil(self.PlayerData.Power * 1.8)
+    end
+    --大招伤害计算
+    if i == self.PlayerData.big_attack_id then 
+        damage = math.ceil(self.PlayerData.Power * 4)
     end
     self.EnemyGetHitText:GetComponent(Text).text = "-"..damage
     self.EnemyGetHitText.gameObject:SetActive(true)

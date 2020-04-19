@@ -11,7 +11,7 @@ local PlayerDate ={
     ,Energy_cur   = 0       --当前能力
     ,Shield_cur   = 0       --当前护盾
     ,HP_cur       = 50      --当前血量
-
+    ,big_attack_id = 99
     --固定道具加成
     ,Item = {
         Hp = 25         --血量+ 3 
