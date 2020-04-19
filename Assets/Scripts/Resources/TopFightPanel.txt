@@ -31,18 +31,6 @@ function TopFightPanel:InitData()
     self.PlayerData.Shield_cur = 0
     self.EnemyData.Hp_cur  = self.EnemyData.Hp_total
     self.EnemyData.FightRound_cur = self.EnemyData.FightRound
-    self.BossHpText.text = self.EnemyData.Hp_cur .. "/" .. self.EnemyData.Hp_total
-    self.BossHpBar.fillAmount = self.EnemyData.Hp_cur/self.EnemyData.Hp_total
-
-    
-    self.Hp_text.text    = self.PlayerData.HP_cur  --[[  .. "/" .. self.PlayerData.Hp_total]]
-    self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
-
-    self.Energy_text.text= self.PlayerData.Energy_cur --[[.. "/" .. self.PlayerData.Energy_total]]
-    self.Energy_text_Bar.fillAmount=self.PlayerData.Energy_cur/self.PlayerData.Energy_total
-
-    self.Shield_text.text= self.PlayerData.Shield_cur --[[ "/" .. self.PlayerData.Shield_total]]
-    self.Shield_text_Bar.fillAmount=self.PlayerData.Shield_cur/self.PlayerData.Shield_total
 end
 
 function TopFightPanel:GetInstance()
