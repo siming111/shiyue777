@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: b5a24452525ce8d4aaa4b28c9b5eab86
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: AaYuanshiwuyu (Non-Commercial Use)
+  fontNames:
+  - AaYuanshiwuyu (Non-Commercial Use)
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
