@@ -7,6 +7,7 @@ local typeNumber = 4
 local maxI = 7
 local maxJ = 8
 local lockKey = 25--锁住砖块的密码
+local specialEventFlag = true
 clickBlocks = {}
 positionTable = {}
 function XXL:new()
@@ -321,15 +322,16 @@ function XXL:Fall()--砖块掉落
                                 )
                                 -- XXL:Fall()
                             else
-                                selectPanel:SetActive(false)
-                                -- Debug.LogError("!!!!进入FALL 稳态")
-                                if(TopFightPanel.EnemyData.Hp_cur<=900) then
+                                if(TopFightPanel.EnemyData.Hp_cur<=900 and specialEventFlag) then
                                     XXL:SpecialEvent()
-                                end
+                                    specialEventFlag = false
+                                else
+                                    selectPanel:SetActive(false)
+                                -- Debug.LogError("!!!!进入FALL 稳态")
                                 -- XXL:ShowFightData()
-                                TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
+                                    TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
+                                end
                             end
-
                         end
                     )
                     flag = false
@@ -526,8 +528,13 @@ function XXL:SpecialEvent()
                 value.block:Find("LockImage").gameObject:SetActive(true)
                 value.block:GetComponent("Button").interactable = false
             end
+            selectPanel:SetActive(false)
+            -- Debug.LogError("!!!!进入FALL 稳态")
+            -- XXL:ShowFightData()
+            TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
         end
     )
+
     Debug.Log("SpecialEvent!")
     -- for i = 1,7,1 do
     --     blockItems[i][1].blockType = blockItems[i][1].blockType*(blockItems[i][1].i+blockItems[i][1].j+3)
