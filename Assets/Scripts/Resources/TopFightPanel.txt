@@ -261,9 +261,9 @@ function TopFightPanel:UpdateRound(info)
             self.hpAddList = {}
             local addHp = self.PlayerData.Item.Hp
             if v.type == 5 then 
-                addHp = self.PlayerData.Item.Hp2
+                addHp = math.ceil(self.PlayerData.Item.Hp * 1.2727) 
             elseif v.type == 9 then 
-                addHp = self.PlayerData.Item.Hp3
+                addHp = math.ceil(self.PlayerData.Item.Hp * 1.81812)
             end
             if self.is_Energy then
                 addHp = math.floor(addHp * 1.5 )
@@ -289,9 +289,9 @@ function TopFightPanel:UpdateRound(info)
             self.shieldAddList = {}
             local addShield = self.PlayerData.Item.Shield
             if v.type == 6 then 
-                addShield = self.PlayerData.Item.Shield2
+                addShield = math.ceil(self.PlayerData.Item.Shield * 1.2727)
             elseif v.type == 10 then 
-                addShield = self.PlayerData.Item.Shield3
+                addShield = math.ceil(self.PlayerData.Item.Shield * 1.81812)
             end
             if self.is_Energy then 
                 addShield = math.floor(addShield * 1.5 )
