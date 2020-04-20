@@ -6,16 +6,11 @@ local time = 0.5--砖块下落时间
 local typeNumber = 4
 local maxI = 7
 local maxJ = 8
-local lockKey = 25--锁住砖块的密码
-local specialEventFlag = true
 clickBlocks = {}
 positionTable = {}
 function XXL:new()
     local o = {}
     setmetatable( o, { __index = self })
-    self.lock1 = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/BlockBoard/Lock1")
-    self.lock2 = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/BlockBoard/Lock2")
-    self.blockBoard = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/BlockBoard").transform
     self.animatorTable = {}
     -- for i = 1,maxI,1 do
     --     table.insert(self.animatorTable,{})
@@ -86,7 +81,7 @@ end
 
 function XXL:InitPositionTable()
     local space = 129
-    local shiftX = 65.5
+    local shiftX = 107
     local shiftY = -62
     for i=1-maxI,maxI,1 do
         positionTable[i] ={}
@@ -168,7 +163,7 @@ function XXL:Click(blockItem)
                             self.fightData.isFirstClick = true
                             LuaTimer.Add(1200,
                                 function()
-                                    -- XXL:ShowFightData()
+                                    XXL:ShowFightData()
                                     TopFightPanel:GetInstance():UpdateRound(self.fightData)
                                 end
                             )
@@ -281,9 +276,9 @@ function XXL:Judge()
         for key,value in pairs(singleClearBlocks) do
             --singleClearBlocks存放了应该被消除的砖块信息，
             --与clickBlock的firstBlock比较可以确定新生成砖块位置
-            -- if(#value>=4)then--第6组的生成新砖块逻辑
-            --     XXL:NewTypeBlock()
-            -- end
+            if(#value>=4)then
+                XXL:NewTypeBlock()
+            end
             for key1,value1 in pairs(value) do
                 XXL:DestroyBlock(value1)
             end
@@ -296,7 +291,7 @@ function XXL:Judge()
 end
 
 function XXL:NewTypeBlock()
-    -- Debug.Log("hello")
+    Debug.Log("hello")
 end
 
 function XXL:Fall()--砖块掉落
@@ -316,22 +311,21 @@ function XXL:Fall()--砖块掉落
                                 LuaTimer.Add(1200,
                                 function()
                                     -- Debug.LogError("调用延时~~")
-                                    -- XXL:ShowFightData()
+                                    XXL:ShowFightData()
                                     TopFightPanel:GetInstance():UpdateRound(self.fightData)
                                 end
                                 )
                                 -- XXL:Fall()
                             else
-                                if(TopFightPanel.EnemyData.Hp_cur<=900 and specialEventFlag) then
-                                    XXL:SpecialEvent()
-                                    specialEventFlag = false
-                                else
-                                    selectPanel:SetActive(false)
+                                selectPanel:SetActive(false)
                                 -- Debug.LogError("!!!!进入FALL 稳态")
-                                -- XXL:ShowFightData()
-                                    TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
-                                end
+                                -- if(TopFightPanel.EnemyData.Hpcur)<=900 then
+                                --     XXL:SpecialEvent()
+                                -- end
+                                XXL:ShowFightData()
+                                TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
                             end
+
                         end
                     )
                     flag = false
@@ -356,11 +350,13 @@ function XXL:Fall()--砖块掉落
 end
 
 function XXL:DestroyBlock(blockItem)
+    -- print("1~~~~~~~~~")
     self.animatorTable[tostring(blockItem)]:SetBool("IsDes",true)
     LuaTimer.Add(1200,function ()
         GameObject.Destroy(blockItem.block.gameObject)
     end)
     blockItems[blockItem.i][blockItem.j] = nil
+    -- print("2~~~~~~~~~")
 end
 
 function XXL:PrintClearBlock(clearBlocks)
@@ -516,46 +512,15 @@ function XXL:Show()
 end
 
 function XXL:SpecialEvent()
-    self.lock1.transform:SetSiblingIndex(self.blockBoard.childCount-1)
-    self.lock2.transform:SetSiblingIndex(self.blockBoard.childCount-1)
-    LeanTween.move(self.lock1.transform,Vector3(562,-435,0),0.5)
-    LeanTween.move(self.lock2.transform,Vector3(543,-462,0),0.5):setOnComplete(
-        function()
-            self.lock1.gameObject:SetActive(false)
-            self.lock2.gameObject:SetActive(false)
-            for key,value in pairs(XXL:GetRandomBlockItem(3))do
-                value.blockType = value.blockType * lockKey
-                value.block:Find("LockImage").gameObject:SetActive(true)
-                value.block:GetComponent("Button").interactable = false
-            end
-            selectPanel:SetActive(false)
-            -- Debug.LogError("!!!!进入FALL 稳态")
-            -- XXL:ShowFightData()
-            TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
-        end
-    )
-
-    Debug.Log("SpecialEvent!")
-    -- for i = 1,7,1 do
-    --     blockItems[i][1].blockType = blockItems[i][1].blockType*(blockItems[i][1].i+blockItems[i][1].j+3)
-    -- end
-    -- for i = 1,7,1 do
-    --     blockItems[i][8].blockType = blockItems[i][8].blockType*(blockItems[i][8].i+blockItems[i][8].j+3)
-    -- end
+    -- Debug.Log("SpecialEvent!")
+    for i = 1,7,1 do
+        blockItems[i][1].blockType = blockItems[i][1].blockType*(blockItems[i][1].i+blockItems[i][1].j+3)
+    end
+    for i = 1,7,1 do
+        blockItems[i][8].blockType = blockItems[i][8].blockType*(blockItems[i][8].i+blockItems[i][8].j+3)
+    end
     -- GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock1"):SetActive(true)
     -- GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock2"):SetActive(true)
-end
-
-function XXL:GetRandomBlockItem(number)--获取随机的不同砖块（number不宜过大）
-    local randomBlockItemTable = {}
-    for i=1,number do
-        local blockItem = blockItems[math.random(maxI)][math.random(maxJ)]
-        while(randomBlockItemTable[tostring(blockItem)]~=nil)do
-            blockItem = blockItems[math.random(maxI)][math.random(maxJ)]
-        end
-        randomBlockItemTable[tostring(blockItem)] = blockItem
-    end
-    return randomBlockItemTable
 end
 
 return XXL
