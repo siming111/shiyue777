@@ -1,16 +1,28 @@
 import "UnityEngine"
 import "UnityEngine.UI"
-UnityEngine.Time.fixedDeltaTime = 0.1
--- import "System.Collections";
--- import "System.Collections.Generic";
-require "EventSystem"
+local eventSystem = require "EventSystem"
 local playerData = require "PlayerData"
 local EnemyData  = require "EnemyData"
 local _XXL = require "XXL"
 _BlockTypeBuilder = require "BlockTypeBuilder"
--- local _Top = require "TopFightPanel"
 XXLPanel = _XXL:new()
 sprites = {}
+Main = Main or {}
+-- local playerMoveCur = 0
+local playerMoveCount = 130
+local moveOffSet =  Vector3(10,0,0)
+local welcomeCanvas     = GameObject.Find("Canvas/WelcomeCanvas")
+local mainCanvas        = GameObject.Find("Canvas/GuildCrushWindow")
+local gameStartBtn      = welcomeCanvas.transform:Find("gameStartBtn"):GetComponent(Button)    
+gameStartBtn.onClick:AddListener(
+    function()
+        --游戏开始    
+        -- playerMoveCur = 0 
+        XXLPanel:Hello()
+        LeanTween.move(welcomeCanvas, Vector3(-2.7,1,3) , 1)
+        LeanTween.move(mainCanvas, Vector3(0,1,3) , 1)
+    end
+)
 
 function Awake()
     playerData.Item.Hp = TestPanel.p_hp
@@ -27,22 +39,38 @@ function Awake()
     _BlockTypeBuilder.power = TestPanel.n_power + _BlockTypeBuilder.energy
 
     print(_BlockTypeBuilder.hp.._BlockTypeBuilder.shield.._BlockTypeBuilder.energy.._BlockTypeBuilder.power)
-
     EnemyData.Hp_total= TestPanel.b_hp_total
     EnemyData.Power= TestPanel.b_power
     EnemyData.FightRound= TestPanel.b_fight_round
-    
 
-    XXLPanel:Hello()
-    -- local data = {
-    --     [1] = {type = 1 , times = 1} --回血
-    --    ,[2] = {type = 2 , times = 1} --回盾
-    --    ,[3] = {type = 3 , times = 1} --加能量
-    --    ,[4] = {type = 4 , times = 1} --攻击
-    -- }
-    -- TopFightPanel:GetInstance():UpdateRound(data)
 end
 
+-- function MoveToGame()
+--     Debug.LogError("MoveToGame")
+--     playerMoveCur = playerMoveCur + 1 
+--     --向前移动结束
+--     if playerMoveCur >= playerMoveCount then 
+--         Debug.LogError("删除进入的计时器")
+--         if luatimer1 then   
+--             LuaTimer.Delete(luatimer1)
+--             luatimer1 = nil
+--         end
+--     --移动
+--     else 
+--         welcomeCanvas.transform.localPosition = welcomeCanvas.transform.localPosition - moveOffSet
+--         mainCanvas.transform.localPosition = mainCanvas.transform.localPosition - moveOffSet
+--     end
+-- end
+-- function MoveToMenuIn()
+--     playerMoveCur = 0 
+--     luatimer99 = LuaTimer.Add(0,1,function ()
+--         MoveToMenu()
+--     end)
+-- end
+function MoveToMenu()
+    LeanTween.move(mainCanvas, Vector3(2.7,1,3) , 1)
+    LeanTween.move(welcomeCanvas, Vector3(0,1,3) , 1)
+end
 
 function LoadSprites()
     for i = 1,6,1 do
@@ -51,8 +79,8 @@ function LoadSprites()
         -- sprites[i] = Resources.Load("Textures/7Tex/Icon","Icon_"..i,Sprite)
     end
 end
-
 LoadSprites()
+
 
 function Update()
     x:Update()

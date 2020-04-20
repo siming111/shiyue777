@@ -6,7 +6,6 @@ local time = 0.5--砖块下落时间
 local typeNumber = 4
 local maxI = 7
 local maxJ = 8
-blockItems = {}
 clickBlocks = {}
 positionTable = {}
 function XXL:new()
@@ -27,7 +26,20 @@ function XXL:Hello()
     if(aa==bb)then
         Debug.Log("lllllllllllll")
     end
-    selectPanel = GameObject.Find("Canvas/GuildCrushWindow/Down/SelectPanel")
+    if blockItems then 
+       for i,v in pairs(blockItems) do 
+            if v then 
+                for key,value in pairs(v) do
+                    GameObject.Destroy(blockItems[i][key].block.gameObject)
+                    blockItems[i][key] = nil
+                end
+            end 
+        end 
+       lockItem = nil
+    end
+    blockItems = {}
+    selectPanel = GameObject.Find("Canvas/GuildCrushWindow/Down/SelectPanel").gameObject
+    selectPanel:SetActive(false)
     local Down = GameObject.Find("Canvas/GuildCrushWindow/Down")
     self.BoardImage = Down.transform:Find("Board").gameObject
     self.BoardImage:SetActive(true)
@@ -65,7 +77,6 @@ function XXL:Hello()
         clearBlocks = XXL:IsOK()
     end
     Debug.Log("resetTime="..resetTime)
-    -- XXL:Show()
 end
 
 function XXL:InitPositionTable()
