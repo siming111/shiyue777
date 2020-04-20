@@ -37,8 +37,6 @@ function Awake()
     _BlockTypeBuilder.shield = TestPanel.n_shield + _BlockTypeBuilder.hp
     _BlockTypeBuilder.energy = TestPanel.n_energy + _BlockTypeBuilder.shield
     _BlockTypeBuilder.power = TestPanel.n_power + _BlockTypeBuilder.energy
-
-    print(_BlockTypeBuilder.hp.._BlockTypeBuilder.shield.._BlockTypeBuilder.energy.._BlockTypeBuilder.power)
     EnemyData.Hp_total= TestPanel.b_hp_total
     EnemyData.Power= TestPanel.b_power
     EnemyData.FightRound= TestPanel.b_fight_round

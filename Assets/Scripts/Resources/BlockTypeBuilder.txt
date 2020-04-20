@@ -8,16 +8,16 @@ local BlockTypeBuilder = BlockTypeBuilder or {}
 function BlockTypeBuilder:GetType()
     local index = math.random(_BlockTypeBuilder.power)
     if(index<=_BlockTypeBuilder.hp)then
-        print("{hp="..index.."}")
+        -- print("{hp="..index.."}")
         return 1
         elseif(index<=_BlockTypeBuilder.shield)then
-            print("{sheild="..index.."}")
+            -- print("{sheild="..index.."}")
             return 2
             elseif(index<=_BlockTypeBuilder.energy)then
-                print("{energy="..index.."}")
+                -- print("{energy="..index.."}")
                 return 3
                 elseif(index<=_BlockTypeBuilder.power)then 
-                    print("{power="..index.."}")
+                    -- print("{power="..index.."}")
                     return 4
                 end
 end
