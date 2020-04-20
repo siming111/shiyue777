@@ -157,6 +157,8 @@ function TopFightPanel:InitPanel()
     self.hp:SetActive(false)
     self.energy:SetActive(false)
     self.shield:SetActive(false)
+    self.energyActive.gameObject:SetActive(false)
+    self.energytextObj:SetActive(true)
 
     --初始化UIState
     self.hp_text.text    = self.PlayerData.HP_cur
@@ -192,10 +194,10 @@ function TopFightPanel:InitPanel()
         -- ,[4] = {type = 2 } --攻击
         -- ,[5] = {type = 1 }
     -- }    
-    LuaTimer.Add(3000,function() 
+    -- LuaTimer.Add(3000,function() 
     -- --怪物收到攻击逻辑处理
-    self:UpdateRound(info)
-    end)
+    -- self:UpdateRound(info)
+    -- end)
 end
 
 function TopFightPanel:CallBack()
