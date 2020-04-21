@@ -182,7 +182,7 @@ function TopFightPanel:InitPanel()
             self.energyActive.gameObject:SetActive(false)
             self.energytextObj:SetActive(true)
             self.boradBg:SetActive(true)
-            Debug.Log(self.is_Energy)
+            -- Debug.Log("is Energy"..self.is_Energy)
         end
     )
     
@@ -206,6 +206,7 @@ end
 
 --更新回合数据（通过事件访问）
 function TopFightPanel:UpdateRound(info)
+    Debug.LogError("info[1].type = " .. info[1].type)
     if info == nil then
         Debug.LogError("UpdateRound没有传参")
         return
@@ -267,6 +268,7 @@ function TopFightPanel:UpdateRound(info)
             end
             if self.is_Energy and v.type == info[1].type then
                 addHp = math.floor(addHp * 1.6 )
+                self.is_Energy = false ---$
             end
 
             for i= 1,v.time do 
@@ -303,6 +305,7 @@ function TopFightPanel:UpdateRound(info)
                         self.shieldAddList[i] = GameObject.Instantiate(self.shield,self.C_Player.transform)
                         self.shieldAddList[i].transform:Find("ShieldText"):GetComponent(Text).text = math.ceil(addShield )
                         self.shieldAddList[i]:SetActive(true) 
+                        self.is_Energy = false ---$
                     else
                         self.shieldAddList[i] = GameObject.Instantiate(self.shield,self.C_Player.transform)
                         self.shieldAddList[i].transform:Find("ShieldText"):GetComponent(Text).text = addShield--小小的增加
@@ -346,22 +349,34 @@ function TopFightPanel:UpdateRound(info)
                     self.energyActive.gameObject:SetActive(true)
                     self.energytextObj:SetActive(false)
                 end
-            else
-                self.is_Energy = false
+            else --假如能量消除能量  
+                --回合数减少
+                if v.type == info[1].type then 
+                    self.EnemyData.FightRound_cur  = self.EnemyData.FightRound_cur + 1 
+                    if v.type == 7 then 
+                        self.EnemyData.FightRound_cur  = self.EnemyData.FightRound_cur + 1 
+                    elseif v.type == 11 then 
+                        self.EnemyData.FightRound_cur  = self.EnemyData.FightRound_cur + 2
+                    end
+                    self.attackCountDown_text.text = self.EnemyData.FightRound_cur
+                    self.is_Energy = false ---$
+                end
             end
             self.energy_text.text = self.PlayerData.Energy_cur
             self.energy_text_Bar.fillAmount = self.PlayerData.Energy_cur / self.PlayerData.Energy_total
         --攻击
         elseif v.type == 4 or v.type == 8 or v.type == 12 then 
-            self.attackTime  = self.attackTime + v.time 
-            for i = 1,v.time do
-                self.attackType[#self.attackType+1] = v.type
-            end
             --小小的增加(单独在这里处理大招逻辑)
             if self.is_Energy and v.type == info[1].type then--大招
-                self.attackTime = 1 
-                self.attackType[1] = self.PlayerData.big_attack_id
+                self.attackTime = 0 
+                self.attackType= {}     
                 self:BigAttack()
+                self.is_Energy= false 
+            else
+                self.attackTime  = self.attackTime + v.time 
+                for i = 1,v.time do
+                    self.attackType[#self.attackType+1] = v.type
+                end
             end
             --小小的增加
         elseif v.type == 13 then
@@ -375,8 +390,8 @@ function TopFightPanel:UpdateRound(info)
     --小小的增加
     if not self.is_Energy then
         self:PlayerAttack(self.attackTime)
-    else
         self.boradBg:SetActive(false)
+    else
         self.is_Energy = false
     end
 end

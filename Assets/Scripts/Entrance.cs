@@ -13,6 +13,7 @@ public class Entrance : MonoBehaviour
     void Start()
     {
 
+        Screen.SetResolution(512, 853, false);
         LuaSvr svr = new LuaSvr();// 如果不先进行某个LuaSvr的初始化的话,下面的mianState会爆一个为null的错误..
 
         //LuaSvr.mainState.loaderDelegate += LuaReourcesFileLoader;
