@@ -439,13 +439,13 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 1065571480272734, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
-      propertyPath: m_Name
-      value: LockImage
-      objectReference: {fileID: 0}
-    - target: {fileID: 1065571480272734, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
+    - target: {fileID: 1897619985390290, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1992635377403292, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
@@ -668,6 +668,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a1e633abc4d3bc4eb1e910bd1ec5df4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2049715198 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1897619985390290, guid: b7e2017341cfb084d94caa181d30ee09,
+    type: 2}
+  m_PrefabInternal: {fileID: 855000452}
+--- !u!95 &2049715202
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2049715198}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 081c0479125766c4e9c4bc46d287453c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &2136774798
 GameObject:
   m_ObjectHideFlags: 0

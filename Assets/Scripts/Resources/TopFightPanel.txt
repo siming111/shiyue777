@@ -46,12 +46,13 @@ function TopFightPanel:InitPanel()
     self.Main    = GameObject.Find("GuildCrushWindow")
     self.C_Player= GameObject.Find("GuildCrushWindow/TopPanel/C_Player")
     self.Boss    = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/Boss")
+    self.boradBg = self.Main.transform:Find("Down/Board/BoardBg").gameObject
     self.LosePanel=self.Main.transform:Find("LosePanel").gameObject
     self.WinPanel =self.Main.transform:Find("WinPanel").gameObject
     self.Player  = self.C_Player.transform:Find("Player").gameObject
     self.WinPanel:SetActive(false)
     self.LosePanel:SetActive(false)
-    
+    self.boradBg:SetActive(false)
     self.WinPanel:GetComponent(Button).onClick:AddListener(
         function()
             if self._enemyHpLoading then 
@@ -106,7 +107,6 @@ function TopFightPanel:InitPanel()
     self.hp      = self.C_Player.transform:Find("Hp").gameObject
     self.energy  = self.C_Player.transform:Find("Energy").gameObject
     self.shield  = self.C_Player.transform:Find("Shield").gameObject
-
     --UIState
     self.UIState     = GameObject.Find("GuildCrushWindow/UIState")
     self.energytextObj= self.UIState.transform:Find("Energy_text").gameObject
@@ -177,11 +177,11 @@ function TopFightPanel:InitPanel()
         function()
             self.is_Energy= true
             self.PlayerData.Energy_cur = 0
-            --todo：增强棋盘
             self.energy_text.text = self.PlayerData.Energy_cur
             self.energy_text_Bar.fillAmount = self.PlayerData.Energy_cur / self.PlayerData.Energy_total
             self.energyActive.gameObject:SetActive(false)
             self.energytextObj:SetActive(true)
+            self.boradBg:SetActive(true)
             Debug.Log(self.is_Energy)
         end
     )
@@ -216,7 +216,7 @@ function TopFightPanel:UpdateRound(info)
     local isCallBack = true 
     local CallBackType = 1 --1.为道具回调 ， 2 为攻击回调
     local data = {}
-    local times= {[1]=0,[2]=0,[3]=0,[4]=0,[5]=0,[6] = 0 ,[7] = 0 ,[8] = 0 ,[9] = 0 ,[10] = 0 ,[11] = 0 ,[12] = 0 ,[13] = 0 ,}
+    local times= {[1] = 0,[2] = 0,[3] = 0,[4] = 0,[5] = 0,[6] = 0 ,[7] = 0 ,[8] = 0 ,[9] = 0 ,[10] = 0 ,[11] = 0 ,[12] = 0 ,[13] = 0 ,}
     local isFirstClick = info.isFirstClick
     for i,v in ipairs(info) do
         if(type(v)=="table")then
@@ -265,8 +265,8 @@ function TopFightPanel:UpdateRound(info)
             elseif v.type == 9 then 
                 addHp = math.ceil(self.PlayerData.Item.Hp * 1.81812)
             end
-            if self.is_Energy then
-                addHp = math.floor(addHp * 1.5 )
+            if self.is_Energy and v.type == info[1].type then
+                addHp = math.floor(addHp * 1.6 )
             end
 
             for i= 1,v.time do 
@@ -293,16 +293,15 @@ function TopFightPanel:UpdateRound(info)
             elseif v.type == 10 then 
                 addShield = math.ceil(self.PlayerData.Item.Shield * 1.81812)
             end
-            if self.is_Energy then 
-                addShield = math.floor(addShield * 1.5 )
+            if self.is_Energy and v.type == info[1].type then 
+                addShield = math.floor(addShield * 1.6 )
             end
             --显示
             for i= 1,v.time do 
                 local timer = LuaTimer.Add(300*(i-1),function ()
-                    if self.is_Energy then 
-                        -- Debug.LogError("self.is_Energy激活")
+                    if self.is_Energy and v.type == info[1].type then 
                         self.shieldAddList[i] = GameObject.Instantiate(self.shield,self.C_Player.transform)
-                        self.shieldAddList[i].transform:Find("ShieldText"):GetComponent(Text).text = math.ceil(addShield * 1.5)
+                        self.shieldAddList[i].transform:Find("ShieldText"):GetComponent(Text).text = math.ceil(addShield )
                         self.shieldAddList[i]:SetActive(true) 
                     else
                         self.shieldAddList[i] = GameObject.Instantiate(self.shield,self.C_Player.transform)
@@ -359,7 +358,7 @@ function TopFightPanel:UpdateRound(info)
                 self.attackType[#self.attackType+1] = v.type
             end
             --小小的增加(单独在这里处理大招逻辑)
-            if self.is_Energy then--大招
+            if self.is_Energy and v.type == info[1].type then--大招
                 self.attackTime = 1 
                 self.attackType[1] = self.PlayerData.big_attack_id
                 self:BigAttack()
@@ -377,6 +376,7 @@ function TopFightPanel:UpdateRound(info)
     if not self.is_Energy then
         self:PlayerAttack(self.attackTime)
     else
+        self.boradBg:SetActive(false)
         self.is_Energy = false
     end
 end
@@ -515,6 +515,7 @@ function TopFightPanel:EnemyGetHit(i)
     elseif self.attackType[i] ==12 then 
         damage = math.ceil(self.PlayerData.Power * 1.8)
     end
+
     --大招伤害计算
     if i == self.PlayerData.big_attack_id then 
         damage = math.ceil(self.PlayerData.Power * 4)
@@ -578,14 +579,19 @@ function TopFightPanel:BossAttack()
     self.PlayerAnim:SetBool("PlayerHit",true)
     self.enemyAttackImage.gameObject:SetActive(true)
     --玩家扣血
-    if self.PlayerData.Shield_cur >= self.EnemyData.Power then 
+    local damage = self.EnemyData.Power
+    local i = math.random(1,10)
+    if i <= 3 then 
+        damage = self.EnemyData.Power * 1.2
+    end
+    if self.PlayerData.Shield_cur >= damage then 
         --护盾值大于怪物扣血
-        self.PlayerData.Shield_cur = self.PlayerData.Shield_cur - self.EnemyData.Power
+        self.PlayerData.Shield_cur = self.PlayerData.Shield_cur - damage
         self.shield_text.text = self.PlayerData.Shield_cur 
         self.shield_text_Bar.fillAmount = self.PlayerData.Shield_cur / self.PlayerData.Shield_total
-    -- 怪物攻击大于护盾
+        -- 怪物攻击大于护盾
     else 
-        local hitOffSet = self.EnemyData.Power - self.PlayerData.Shield_cur
+        local hitOffSet = damage - self.PlayerData.Shield_cur
         self.PlayerData.Shield_cur = 0 
         self.shield_text.text = 0
         self.shield_text_Bar.fillAmount = self.PlayerData.Shield_cur / self.PlayerData.Shield_total
