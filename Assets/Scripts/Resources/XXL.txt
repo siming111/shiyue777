@@ -289,7 +289,7 @@ function XXL:Judge()
         --     end
         -- end
         self.combo = self.combo + 1
-        print(self.combo)
+        -- print(self.combo)
         AudioSource.PlayClipAtPoint(self.clearSounds[self.combo], self.blockBoard.transform.position);
         for key,value in pairs(singleClearBlocks) do
             --singleClearBlocks存放了应该被消除的砖块信息，
