@@ -471,6 +471,7 @@ end
 
 function TopFightPanel:FiretheBall(i)
     --发射火球
+    self.fireBall:GetComponent(AudioSource).enabled = true
     self.fireBallImage:SetActive(true)
     self.player_AttackTimer = LuaTimer.Add(0,10,function()
         self:AttackEnemy(i)
@@ -491,7 +492,9 @@ function TopFightPanel:AttackEnemy(i)
             self.BossAnim:SetBool("GetHit",true)
             --怪物收到攻击逻辑处理
             self:EnemyGetHit(i)
+            self.fireBall:GetComponent(AudioSource).enabled = true
             self.fireBallImage:SetActive(false)
+            self.fireBall:GetComponent(AudioSource).enabled = false
             self.hitImage:SetActive(true)
             local timer02_ = LuaTimer.Add(1000,function()
                 self.BossAnim:SetBool("GetHit",false) 

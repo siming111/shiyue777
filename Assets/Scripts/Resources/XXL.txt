@@ -17,6 +17,8 @@ function XXL:new()
     self.lock2 = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/BlockBoard/Lock2")
     self.blockBoard = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/BlockBoard").transform
     self.animatorTable = {}
+    self.combo = 0
+    self.clearSounds = {}
     -- for i = 1,maxI,1 do
     --     table.insert(self.animatorTable,{})
     -- end
@@ -25,6 +27,7 @@ end
 
 function XXL:Hello()
     XXL:InitPositionTable()
+    XXL:InitSounds()
     TopFightPanel:Init()
     aa = { ii = 1}
     bb = { ii = 1}
@@ -84,6 +87,12 @@ function XXL:Hello()
     Debug.Log("resetTime="..resetTime)
 end
 
+function XXL:InitSounds()
+    for i=1,8 do
+        table.insert(self.clearSounds,Resources.Load("Sounds/Clear/jewel_"..i,AudioClip))
+    end
+end
+
 function XXL:InitPositionTable()
     local space = 129
     local shiftX = 65.5
@@ -133,6 +142,7 @@ function XXL:CancelSelectBlock()
 end
 
 function XXL:Click(blockItem)
+    self.combo = 0
     local i = blockItem.i
     local j = blockItem.j
     -- Debug.Log("i="..i..",j="..j..",t="..blockItems[i][j].blockType)
@@ -278,6 +288,9 @@ function XXL:Judge()
         --         -- s = s.."}\n"
         --     end
         -- end
+        self.combo = self.combo + 1
+        print(self.combo)
+        AudioSource.PlayClipAtPoint(self.clearSounds[self.combo], self.blockBoard.transform.position);
         for key,value in pairs(singleClearBlocks) do
             --singleClearBlocks存放了应该被消除的砖块信息，
             --与clickBlock的firstBlock比较可以确定新生成砖块位置
@@ -518,20 +531,24 @@ end
 function XXL:SpecialEvent()
     self.lock1.transform:SetSiblingIndex(self.blockBoard.childCount-1)
     self.lock2.transform:SetSiblingIndex(self.blockBoard.childCount-1)
-    LeanTween.move(self.lock1.transform,Vector3(562,-435,0),0.5)
-    LeanTween.move(self.lock2.transform,Vector3(543,-462,0),0.5):setOnComplete(
+    self.lock1:GetComponent(AudioSource).enabled = true
+    LeanTween.move(self.lock1.transform,Vector3(562,-435,0),0.8)
+    LeanTween.move(self.lock2.transform,Vector3(543,-462,0),0.8):setOnComplete(
         function()
-            self.lock1.gameObject:SetActive(false)
-            self.lock2.gameObject:SetActive(false)
-            for key,value in pairs(XXL:GetRandomBlockItem(3))do
-                value.blockType = value.blockType * lockKey
-                value.block:Find("LockImage").gameObject:SetActive(true)
-                value.block:GetComponent("Button").interactable = false
-            end
-            selectPanel:SetActive(false)
-            -- Debug.LogError("!!!!进入FALL 稳态")
-            -- XXL:ShowFightData()
-            TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
+            LuaTimer.Add(600,function()
+                self.lock1.gameObject:SetActive(false)
+                self.lock2.gameObject:SetActive(false)
+                for key,value in pairs(XXL:GetRandomBlockItem(3))do
+                    value.blockType = value.blockType * lockKey
+                    value.block:Find("LockImage").gameObject:SetActive(true)
+                    value.block:GetComponent("Button").interactable = false
+                end
+                selectPanel:SetActive(false)
+                -- Debug.LogError("!!!!进入FALL 稳态")
+                -- XXL:ShowFightData()
+                TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
+                self.lock1:GetComponent(AudioSource).enabled = false
+            end)
         end
     )
 
@@ -557,5 +574,7 @@ function XXL:GetRandomBlockItem(number)--获取随机的不同砖块（number不
     end
     return randomBlockItemTable
 end
+
+
 
 return XXL
