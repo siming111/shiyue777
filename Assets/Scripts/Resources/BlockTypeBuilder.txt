@@ -1,22 +1,26 @@
 local BlockTypeBuilder = BlockTypeBuilder or {}
 
--- local hp = 23
--- local sheild = hp + 19
--- local energy = sheild + 18
--- local power = energy + 40
+local hp = 23
+local sheild = hp + 19
+local energy = sheild + 18
+local power = energy + 40
 
+BlockTypeBuilder.hp = hp
+BlockTypeBuilder.shield = sheild
+BlockTypeBuilder.energy = energy
+BlockTypeBuilder.power = power
 function BlockTypeBuilder:GetType()
-    local index = math.random(_BlockTypeBuilder.power)
-    if(index<=_BlockTypeBuilder.hp)then
+    local index = math.random(BlockTypeBuilder.power)
+    if(index<=BlockTypeBuilder.hp)then
         -- print("{hp="..index.."}")
         return 1
-        elseif(index<=_BlockTypeBuilder.shield)then
+        elseif(index<=BlockTypeBuilder.shield)then
             -- print("{sheild="..index.."}")
             return 2
-            elseif(index<=_BlockTypeBuilder.energy)then
+            elseif(index<=BlockTypeBuilder.energy)then
                 -- print("{energy="..index.."}")
                 return 3
-                elseif(index<=_BlockTypeBuilder.power)then 
+                elseif(index<=BlockTypeBuilder.power)then 
                     -- print("{power="..index.."}")
                     return 4
                 end

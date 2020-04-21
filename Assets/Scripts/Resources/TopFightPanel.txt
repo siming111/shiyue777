@@ -2,6 +2,7 @@
     @desc: 控制战斗界面
     @author:yxy
 ]]
+
 UnityEngine.Time.fixedDeltaTime = 0.1
 local TopFightPanel = TopFightPanel or {}
 -- local XXL = require "XXL"
@@ -12,26 +13,33 @@ function TopFightPanel:new()
 end
 
 function TopFightPanel:Init()
-    --获得当前关卡
-    local level = 1
     --生成关卡数据
-    self:InitData(level)
+    self:InitData(Level_cur)
     --生成Panel
     self:InitPanel()
 end
 
-function TopFightPanel:InitData()
+function TopFightPanel:InitData(Level_cur)
     self.EnemyData = {}
     self.PlayerData= {}
     self.RoundData = {}  --这个是消消乐每回合传递过来的数据
     self.EnemyData = require "EnemyData"
     self.PlayerData= require "PlayerData"
+    --更新~后续可能要好好改一下这个不好
+    if Level_cur == 1 then 
+        self.PlayerData.Power = 100
+        self.EnemyData.Hp_total = 1000
+    else 
+        self.PlayerData.Power = 150
+        self.EnemyData.Hp_total = 4000
+    end
     self.PlayerData.HP_cur= self.PlayerData.Hp_total
     self.PlayerData.Energy_cur = 0 
     self.PlayerData.Shield_cur = 0
     self.EnemyData.Hp_cur  = self.EnemyData.Hp_total
     self.EnemyData.FightRound_cur = self.EnemyData.FightRound
     self.is_boss_death = false 
+    
 end
 
 function TopFightPanel:GetInstance()
@@ -74,7 +82,7 @@ function TopFightPanel:InitPanel()
             if self._BossMove then 
                 LuaTimer.Delete(self._BossMove)
             end
-            MoveToMenu()
+            LevelSelectPanel:BackToMenu()
         end
     )
     self.LosePanel:GetComponent(Button).onClick:AddListener(
@@ -98,7 +106,7 @@ function TopFightPanel:InitPanel()
             if self._BossMove then 
                 LuaTimer.Delete(self._BossMove)
             end
-            MoveToMenu()
+            LevelSelectPanel:BackToMenu()
         end
     )
     
@@ -119,6 +127,7 @@ function TopFightPanel:InitPanel()
     self.energyAddText = self.energy.transform:Find("EnergyAddText").gameObject:GetComponent(Text)
     self.shieldText = self.shield.transform:Find("ShieldText").gameObject:GetComponent(Text)
     self.hp_text     = self.UIState.transform:Find("Hp_text/Hp_text").gameObject:GetComponent(Text)
+    self.playerGetHit= self.C_Player.transform:Find("PlayerGetHit").gameObject:GetComponent(Text)
     self.hpAddText.text= self.PlayerData.Item.Hp
     self.energyAddText.text = self.PlayerData.Item.Energy
     self.shieldText.text = self.PlayerData.Item.Shield
@@ -136,6 +145,7 @@ function TopFightPanel:InitPanel()
     self.hitImage        = self.fireBall.transform:Find("hitImage").gameObject
     self.enemyAttackImage= GameObject.Find("GuildCrushWindow/TopPanel/Enemy/EnemyAttack"):GetComponent(Image)
     self.enemyAttackImage.gameObject:SetActive(false)
+    self.bossHpLoad.fillAmount = 1 
     
     --怪物相关组件
     self.hp_text_Bar=self.UIState.transform:Find("Hp_text/Hp_text_Bar").gameObject:GetComponent(Image)
@@ -182,7 +192,6 @@ function TopFightPanel:InitPanel()
             self.energyActive.gameObject:SetActive(false)
             self.energytextObj:SetActive(true)
             self.boradBg:SetActive(true)
-            -- Debug.Log("is Energy"..self.is_Energy)
         end
     )
     
@@ -206,7 +215,6 @@ end
 
 --更新回合数据（通过事件访问）
 function TopFightPanel:UpdateRound(info)
-    Debug.LogError("info[1].type = " .. info[1].type)
     if info == nil then
         Debug.LogError("UpdateRound没有传参")
         return
@@ -238,7 +246,7 @@ function TopFightPanel:UpdateRound(info)
 
     if isCallBack then 
         if CallBackType == 2  then 
-            if self.is_Energy then
+            if self.is_Energy and (info[1].type == 4 or info[1].type == 8 or info[1].type == 12)  then
                 LuaTimer.Add(5000, function ()
                     self:CallBack()
                 end)
@@ -528,13 +536,13 @@ end
 
 function TopFightPanel:EnemyGetHit(i)
     --怪物扣血
-    local damage = self.PlayerData.Power
+    local damage = self.PlayerData.Power 
     if self.attackType[i] == 8 then 
         damage = math.ceil(self.PlayerData.Power * 1.3)
     elseif self.attackType[i] ==12 then 
         damage = math.ceil(self.PlayerData.Power * 1.8)
     end
-
+    damage = damage + math.random(1,5)
     --大招伤害计算
     if i == self.PlayerData.big_attack_id then 
         damage = math.ceil(self.PlayerData.Power * 4)
@@ -598,13 +606,14 @@ function TopFightPanel:BossAttack()
     self.PlayerAnim:SetBool("PlayerHit",true)
     self.enemyAttackImage.gameObject:SetActive(true)
     --玩家扣血
-    local damage = self.EnemyData.Power
+    local damage = self.EnemyData.Power + math.random(1,5)
     local i = math.random(1,10)
     if i <= 3 then 
-        damage = self.EnemyData.Power * 1.2
+        damage = math.floor(damage * 1.2)
     end
     if self.PlayerData.Shield_cur >= damage then 
         --护盾值大于怪物扣血
+
         self.PlayerData.Shield_cur = self.PlayerData.Shield_cur - damage
         self.shield_text.text = self.PlayerData.Shield_cur 
         self.shield_text_Bar.fillAmount = self.PlayerData.Shield_cur / self.PlayerData.Shield_total

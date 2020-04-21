@@ -1,0 +1,82 @@
+LevelSelectPanel = LevelSelectPanel or {}
+Level_cur = 1 --当前关卡（全局）
+function LevelSelectPanel:new()
+    o = o or {}
+    setmetatable( o, { __index = self }) 
+    self:Init()
+    return o  
+end 
+
+function LevelSelectPanel:Init()
+    self:InitPanel()
+end 
+
+function LevelSelectPanel:InitPanel()
+    self.Main              = GameObject.Find("Canvas")
+    self.welcomeCanvas     = GameObject.Find("Canvas/WelcomeCanvas")
+    self.mainCanvas        = GameObject.Find("Canvas/GuildCrushWindow")
+    self.gameStartBtn      = self.welcomeCanvas.transform:Find("gameStartBtn"):GetComponent(Button)
+    self.mainAnim          = self.mainCanvas:GetComponent(Animator)
+    self.selectPanel       = self.Main.transform:Find("LevelSelectPanel").gameObject
+    self.loadingImage1     = self.selectPanel.transform:Find("Loading1").gameObject
+    self.loadingImage2     = self.mainCanvas.transform:Find("Loading2").gameObject
+    self.levelBtn1  = self.selectPanel.transform:Find("Level1Btn1"):GetComponent(Button)
+    self.levelBtn2  = self.selectPanel.transform:Find("Level1Btn2"):GetComponent(Button)
+    self.player     = self.selectPanel.transform:Find("Player")
+    -- self.mainCanvas:SetActive(false)
+    self.loadingImage2:SetActive(true)
+    self.loadingImage1:SetActive(true)
+
+    self:_addListener()
+    
+end 
+
+function LevelSelectPanel:_addListener()
+    self.levelBtn1.onClick:AddListener(
+        function () 
+            LeanTween.move(self.player.transform , Vector3(-249,411,0) , 1)
+            Level_cur = 1
+            XXLPanel:Hello()
+            self.mainCanvas:SetActive(true)
+            self.mainAnim:SetBool("MainGameInScene",true)
+            --动画播放结束后
+            LuaTimer.Add(1100 ,function ()
+                self.selectPanel:SetActive(false)
+            end )
+        end
+    )
+    
+    self.levelBtn2.onClick:AddListener(
+        function () 
+            LeanTween.move(self.player.transform , Vector3(145,263,0) , 1)
+            Level_cur = 2
+            XXLPanel:Hello()
+            self.mainCanvas:SetActive(true)
+            self.mainAnim:SetBool("MainGameInScene",true)
+            --动画播放结束后
+            LuaTimer.Add(1100 ,function ()
+                self.selectPanel:SetActive(false)
+            end )
+        end
+    )
+
+
+    self.gameStartBtn.onClick:AddListener(
+        function()
+            --进入选关界面 
+            self.gameStartBtn:GetComponent(AudioSource):Play()
+            self.selectPanel:SetActive(true)
+            LuaTimer.Add(3000,function ()
+                self.welcomeCanvas:SetActive(false) 
+            end)
+            XXLPanel:Hello()
+        end
+    )
+end
+
+function LevelSelectPanel:BackToMenu()
+    self.selectPanel:SetActive(true)
+    self.mainAnim:SetBool("MainGameInScene",false)
+end
+
+-- return LevelSelectPanel

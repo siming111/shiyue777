@@ -3,72 +3,19 @@ import "UnityEngine.UI"
 local eventSystem = require "EventSystem"
 local playerData = require "PlayerData"
 local EnemyData  = require "EnemyData"
-local _XXL = require "XXL"
+local _XXL = require "XXL"  
 _BlockTypeBuilder = require "BlockTypeBuilder"
 XXLPanel = _XXL:new()
+require "LevelSelectPanel"
+
 sprites = {}
 Main = Main or {}
--- local playerMoveCur = 0
-local playerMoveCount = 130
-local moveOffSet =  Vector3(10,0,0)
-local welcomeCanvas     = GameObject.Find("Canvas/WelcomeCanvas")
-local mainCanvas        = GameObject.Find("Canvas/GuildCrushWindow")
-local gameStartBtn      = welcomeCanvas.transform:Find("gameStartBtn"):GetComponent(Button)    
-gameStartBtn.onClick:AddListener(
-    function()
-        --游戏开始    
-        -- playerMoveCur = 0 
-        gameStartBtn:GetComponent(AudioSource):Play()
-        XXLPanel:Hello()
-        LeanTween.move(welcomeCanvas, Vector3(-2.7,1,3) , 1)
-        LeanTween.move(mainCanvas, Vector3(0,1,3) , 1)
-    end
-)
 
 function Awake()
-    playerData.Item.Hp = TestPanel.p_hp
-    playerData.Item.Shield = TestPanel.p_shield
-    playerData.Item.Energy = TestPanel.p_energy
-    playerData.Power = TestPanel.p_power
-    playerData.Hp_total = TestPanel.p_hp_total
-    playerData.Shield_total= TestPanel.p_shield_total
-    playerData.Energy_total= TestPanel.p_energy_total
-
-    _BlockTypeBuilder.hp = TestPanel.n_hp
-    _BlockTypeBuilder.shield = TestPanel.n_shield + _BlockTypeBuilder.hp
-    _BlockTypeBuilder.energy = TestPanel.n_energy + _BlockTypeBuilder.shield
-    _BlockTypeBuilder.power = TestPanel.n_power + _BlockTypeBuilder.energy
-    EnemyData.Hp_total= TestPanel.b_hp_total
-    EnemyData.Power= TestPanel.b_power
-    EnemyData.FightRound= TestPanel.b_fight_round
-
+    LevelSelectPanel:new()
 end
 
--- function MoveToGame()
---     Debug.LogError("MoveToGame")
---     playerMoveCur = playerMoveCur + 1 
---     --向前移动结束
---     if playerMoveCur >= playerMoveCount then 
---         Debug.LogError("删除进入的计时器")
---         if luatimer1 then   
---             LuaTimer.Delete(luatimer1)
---             luatimer1 = nil
---         end
---     --移动
---     else 
---         welcomeCanvas.transform.localPosition = welcomeCanvas.transform.localPosition - moveOffSet
---         mainCanvas.transform.localPosition = mainCanvas.transform.localPosition - moveOffSet
---     end
--- end
--- function MoveToMenuIn()
---     playerMoveCur = 0 
---     luatimer99 = LuaTimer.Add(0,1,function ()
---         MoveToMenu()
---     end)
--- end
 function MoveToMenu()
-    LeanTween.move(mainCanvas, Vector3(2.7,1,3) , 1)
-    LeanTween.move(welcomeCanvas, Vector3(0,1,3) , 1)
 end
 
 function LoadSprites()

@@ -26,6 +26,7 @@ public class Entrance : MonoBehaviour
             //{
             //    luaFunction.call();
             //}
+            luaFunction.call();
         });
         LeanTween.move(gameObject, new Vector3(0f, 1f, 2f), 1f);
     }
@@ -36,10 +37,8 @@ public class Entrance : MonoBehaviour
         LTDescr ltdescr = new LTDescr();
     }
 
-    public void start()
-    {
-        luaFunction.call();
-    }
+  
+
 
     // SLua Loader代理方法
     private static byte[] LuaReourcesFileLoader(string strFile,ref string fn)
