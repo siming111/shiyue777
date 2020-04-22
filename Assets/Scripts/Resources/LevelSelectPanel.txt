@@ -28,7 +28,6 @@ function LevelSelectPanel:InitPanel()
     self.loadingImage1:SetActive(true)
 
     self:_addListener()
-    
 end 
 
 function LevelSelectPanel:_addListener()
@@ -60,7 +59,6 @@ function LevelSelectPanel:_addListener()
         end
     )
 
-
     self.gameStartBtn.onClick:AddListener(
         function()
             --进入选关界面 
@@ -78,5 +76,3 @@ function LevelSelectPanel:BackToMenu()
     self.selectPanel:SetActive(true)
     self.mainAnim:SetBool("MainGameInScene",false)
 end
-
--- return LevelSelectPanel

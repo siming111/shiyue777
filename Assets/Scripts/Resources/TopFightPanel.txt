@@ -193,19 +193,6 @@ function TopFightPanel:InitPanel()
             self.boradBg:SetActive(true)
         end
     )
-    
-    -- 测试专用
-    -- local info = {
-        --  [1] = {type = 4} --回血
-        -- ,[2] = {type = 5 } --回盾
-        -- ,[3] = {type = 9 } --加能量
-        -- ,[4] = {type = 2 } --攻击
-        -- ,[5] = {type = 1 }
-    -- }    
-    -- LuaTimer.Add(3000,function() 
-    -- --怪物收到攻击逻辑处理
-    -- self:UpdateRound(info)
-    -- end)
 end
 
 function TopFightPanel:CallBack()
@@ -516,9 +503,7 @@ function TopFightPanel:AttackEnemy(i)
             self.BossAnim:SetBool("GetHit",true)
             --怪物收到攻击逻辑处理
             self:EnemyGetHit(i)
-            -- self.fireBall:GetComponent(AudioSource).enabled = true
             self.fireBallImage:SetActive(false)
-            -- self.fireBall:GetComponent(AudioSource).enabled = false
             self.hitImage:SetActive(true)
             local timer02_ = LuaTimer.Add(1000,function()
                 self.BossAnim:SetBool("GetHit",false) 
