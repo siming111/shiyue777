@@ -3,9 +3,19 @@
     @author: yxy
 ]]
 local EnemyData ={
-    Power = 25      --攻击力
+    Level1 = {
+        Power = 70,
+        Hp_total = 2000
+    }
+
+    ,Level2 = {
+        Power = 150
+        ,Hp_total = 4000
+    }
+
+    ,Power = 70      --攻击力
     ,FightRound = 2 --攻击回合
-    ,Hp_total  =  1000     --血量
+    ,Hp_total  =  2000     --血量
 
     ,Hp_cur = 1000
     ,FightRound_cur = 2
