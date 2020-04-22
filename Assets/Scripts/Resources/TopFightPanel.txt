@@ -304,6 +304,7 @@ function TopFightPanel:UpdateRound(info)
             end
             if self.is_Energy and v.type == info[1].type then 
                 addShield = math.floor(addShield * 1.6 )
+                XXLPanel:UnlockBlock()
             end
             --显示
             for i= 1,v.time do 
