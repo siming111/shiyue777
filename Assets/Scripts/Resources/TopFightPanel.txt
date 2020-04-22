@@ -52,6 +52,8 @@ function TopFightPanel:InitPanel()
     self.LosePanel=self.Main.transform:Find("LosePanel").gameObject
     self.WinPanel =self.Main.transform:Find("WinPanel").gameObject
     self.Player  = self.C_Player.transform:Find("Player").gameObject
+    self.loadingImage2     = self.Main.transform:Find("Loading2").gameObject
+    self.loadingImage2text = self.loadingImage2.transform:Find("Mask/Text"):GetComponent(Text)
     self.WinPanel:SetActive(false)
     self.LosePanel:SetActive(false)
     self.boradBg:SetActive(false)
@@ -76,7 +78,7 @@ function TopFightPanel:InitPanel()
             if self._BossMove then 
                 LuaTimer.Delete(self._BossMove)
             end
-            LevelSelectPanel:BackToMenu()
+            LevelSelectPanel:BackToMenu(true)
         end
     )
     self.LosePanel:GetComponent(Button).onClick:AddListener(
@@ -100,7 +102,8 @@ function TopFightPanel:InitPanel()
             if self._BossMove then 
                 LuaTimer.Delete(self._BossMove)
             end
-            LevelSelectPanel:BackToMenu()
+            -- loadingImage2text.text = "哈哈，我又来了"
+            LevelSelectPanel:BackToMenu(false)
         end
     )
     
@@ -150,6 +153,7 @@ function TopFightPanel:InitPanel()
     self.bossHpText.text = self.EnemyData.Hp_cur .. "/" .. self.EnemyData.Hp_total
     self.bossHpBar.fillAmount = self.EnemyData.Hp_cur/self.EnemyData.Hp_total
     self.angryImage = self.Boss.transform:Find("AngryImage").gameObject
+
 
     --其他初始化
     self.Playerrect  = self.Player.transform
@@ -292,6 +296,7 @@ function TopFightPanel:UpdateRound(info)
             if self.is_Energy and v.type == info[1].type then 
                 addShield = math.floor(addShield * 1.6 )
                 XXLPanel:UnlockBlock()
+                self.is_Energy =false
             end
             --显示
             for i= 1,v.time do 

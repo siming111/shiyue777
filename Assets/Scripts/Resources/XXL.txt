@@ -10,6 +10,7 @@ local lockKey = 25--锁住砖块的密码
 local specialEventFlag = true
 clickBlocks = {}
 positionTable = {}
+lockBlockTable = {}
 function XXL:new()
     local o = {}
     setmetatable( o, { __index = self })
@@ -19,7 +20,6 @@ function XXL:new()
     self.animatorTable = {}
     self.combo = 0
     self.clearSounds = {}
-    self.lockBlockTable = {}
     -- for i = 1,maxI,1 do
     --     table.insert(self.animatorTable,{})
     -- end
@@ -29,6 +29,7 @@ end
 function XXL:Hello()
     XXL:InitPositionTable()
     XXL:InitSounds()
+    lockBlockTable = {}
     self.lock1.transform.localPosition = Vector3(1737,542,0)
     self.lock2.transform.localPosition = Vector3(-560,493,0)
     self.lock1:SetActive(true)
@@ -85,7 +86,6 @@ function XXL:Hello()
         end
         clearBlocks = XXL:IsOK()
     end
-    Debug.Log("resetTime="..resetTime)
 end
 
 function XXL:InitSounds()
@@ -158,7 +158,7 @@ function XXL:Click(blockItem)
         else
             if((clickBlocks.firstBlock.i==blockItem.i and math.abs(clickBlocks.firstBlock.j-blockItem.j)==1) or
             (clickBlocks.firstBlock.j==blockItem.j and math.abs(clickBlocks.firstBlock.i-blockItem.i)==1))--两个砖块是否相邻
-            -- if(true)
+            -- if(true) 
             then
                 selectPanel:SetActive(true)
                 clickBlocks.secondBlock = blockItems[i][j]
@@ -316,7 +316,6 @@ function XXL:PrintClearBlock(clearBlocks)
     for key,value in pairs(clearBlocks) do
         s = s.."(i"..value.i.."j"..value.j.."t"..value.blockType..") "
     end
-    Debug.Log(s)
 end
 
 function XXL:IsOK666()--666工作组检测
@@ -452,7 +451,7 @@ function XXL:SpecialEvent()
                 self.lock1.gameObject:SetActive(false)
                 self.lock2.gameObject:SetActive(false)
                 for key,value in pairs(XXL:GetRandomBlockItem(3))do
-                    table.insert(self.lockBlockTable,value)
+                    table.insert(lockBlockTable,value)
                     value.blockType = value.blockType * lockKey
                     value.block:Find("LockImage").gameObject:SetActive(true)
                     value.block:GetComponent("Button").interactable = false
@@ -464,7 +463,6 @@ function XXL:SpecialEvent()
         end
     )
 
-    Debug.Log("SpecialEvent!")
 end
 
 function XXL:GetRandomBlockItem(number)--获取随机的不同砖块（number不宜过大）
@@ -480,7 +478,7 @@ function XXL:GetRandomBlockItem(number)--获取随机的不同砖块（number不
 end
 
 function XXL:UnlockBlock()
-    for key,value in pairs(self.lockBlockTable) do
+    for key,value in pairs(lockBlockTable) do
         value.lockImage:GetComponent(Animator):SetBool("Lock",false)
         value.blockType = value.blockType / lockKey
         value.block:GetComponent(Button).interactable = true

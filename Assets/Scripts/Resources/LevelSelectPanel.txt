@@ -20,13 +20,20 @@ function LevelSelectPanel:InitPanel()
     self.selectPanel       = self.Main.transform:Find("LevelSelectPanel").gameObject
     self.loadingImage1     = self.selectPanel.transform:Find("Loading1").gameObject
     self.loadingImage2     = self.mainCanvas.transform:Find("Loading2").gameObject
+    self.loadingImage2text = self.loadingImage2.transform:Find("Mask/Text"):GetComponent(Text)
+
+    self.loadingImage1text1 = self.loadingImage1.transform:Find("Mask/Text"):GetComponent(Text)
+    self.loadingImage1text3 = self.loadingImage1.transform:Find("Mask2/Text (1)"):GetComponent(Text)
+    self.loadingImage1text2 = self.loadingImage1.transform:Find("Mask3/Text (2)"):GetComponent(Text)
     self.levelBtn1  = self.selectPanel.transform:Find("Level1Btn1"):GetComponent(Button)
     self.levelBtn2  = self.selectPanel.transform:Find("Level1Btn2"):GetComponent(Button)
     self.player     = self.selectPanel.transform:Find("Player")
     -- self.mainCanvas:SetActive(false)
     self.loadingImage2:SetActive(true)
     self.loadingImage1:SetActive(true)
-
+    self.loadingImage1text1.text = "维护世界和平的世界宝石"
+    self.loadingImage1text2.text = "被狮鹫魔王抢走了"
+    self.loadingImage1text3.text = "你必须击败它才能夺回宝石"
     self:_addListener()
 end 
 
@@ -35,6 +42,7 @@ function LevelSelectPanel:_addListener()
         function () 
             LeanTween.move(self.player.transform , Vector3(-249,411,0) , 1)
             Level_cur = 1
+            self.loadingImage2text.text = "狮鹫魔王，接受制裁吧！"
             XXLPanel:Hello()
             self.mainCanvas:SetActive(true)
             self.mainAnim:SetBool("MainGameInScene",true)
@@ -49,6 +57,7 @@ function LevelSelectPanel:_addListener()
         function () 
             LeanTween.move(self.player.transform , Vector3(145,263,0) , 1)
             Level_cur = 2
+            self.loadingImage2text.text = "小猫咪我又来了"
             XXLPanel:Hello()
             self.mainCanvas:SetActive(true)
             self.mainAnim:SetBool("MainGameInScene",true)
@@ -72,7 +81,16 @@ function LevelSelectPanel:_addListener()
     )
 end
 
-function LevelSelectPanel:BackToMenu()
+function LevelSelectPanel:BackToMenu(win)
+    if win then    
+        self.loadingImage1text1.text = "你拯救了世界"
+        self.loadingImage1text2.text = "但狮鹫魔王跑了"
+        self.loadingImage1text3.text = "有空去找下它呗"
+    else
+        self.loadingImage1text1.text = "你被打的鼻青脸肿"
+        self.loadingImage1text2.text = "灰溜溜的跑了"
+        self.loadingImage1text3.text = "但你还可以继续挑战"
+    end
     self.selectPanel:SetActive(true)
     self.mainAnim:SetBool("MainGameInScene",false)
 end
