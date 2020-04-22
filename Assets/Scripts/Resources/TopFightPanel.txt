@@ -27,10 +27,10 @@ function TopFightPanel:InitData(Level_cur)
     self.PlayerData= require "PlayerData"
     --更新~后续可能要好好改一下这个不好
     if Level_cur == 1 then 
-        self.PlayerData.Power = 100
-        self.EnemyData.Hp_total = 1000
+        self.EnemyData.Power = 70
+        self.EnemyData.Hp_total = 2000
     else 
-        self.PlayerData.Power = 150
+        self.EnemyData.Power = 150
         self.EnemyData.Hp_total = 4000
     end
     self.PlayerData.HP_cur= self.PlayerData.Hp_total
@@ -156,6 +156,7 @@ function TopFightPanel:InitPanel()
     self.topBg = GameObject.Find("GuildCrushWindow/Bg/TopBg")
     self.bossHpText.text = self.EnemyData.Hp_cur .. "/" .. self.EnemyData.Hp_total
     self.bossHpBar.fillAmount = self.EnemyData.Hp_cur/self.EnemyData.Hp_total
+    self.angryImage = self.Boss.transform:Find("AngryImage").gameObject
 
     --其他初始化
     self.Playerrect  = self.Player.transform
@@ -179,8 +180,13 @@ function TopFightPanel:InitPanel()
 
     self.shield_text.text= self.PlayerData.Shield_cur
     self.shield_text_Bar.fillAmount=self.PlayerData.Shield_cur/self.PlayerData.Shield_total
-    self.level_text.text = 1
-    
+    self.level_text.text = Level_cur
+
+    if Level_cur == 1 then 
+        self.angryImage:SetActive(false)
+    else
+        self.angryImage:SetActive(true)
+    end
     --是否有能量buff状态
     self.is_Energy = false
     self.energyActiveBtn.onClick:AddListener(
@@ -360,11 +366,11 @@ function TopFightPanel:UpdateRound(info)
             else --假如能量消除能量  
                 --回合数减少
                 if v.type == info[1].type then 
-                    self.EnemyData.FightRound_cur  = self.EnemyData.FightRound_cur + 1 
+                    self.EnemyData.FightRound_cur  = self.EnemyData.FightRound_cur + 2 
                     if v.type == 7 then 
                         self.EnemyData.FightRound_cur  = self.EnemyData.FightRound_cur + 1 
                     elseif v.type == 11 then 
-                        self.EnemyData.FightRound_cur  = self.EnemyData.FightRound_cur + 2
+                        self.EnemyData.FightRound_cur  = self.EnemyData.FightRound_cur + 3
                     end
                     self.attackCountDown_text.text = self.EnemyData.FightRound_cur
                     self.is_Energy = false ---$
@@ -538,9 +544,9 @@ function TopFightPanel:EnemyGetHit(i)
     --怪物扣血
     local damage = self.PlayerData.Power 
     if self.attackType[i] == 8 then 
-        damage = math.ceil(self.PlayerData.Power * 1.3)
+        damage = math.ceil(self.PlayerData.Power * 2)
     elseif self.attackType[i] ==12 then 
-        damage = math.ceil(self.PlayerData.Power * 1.8)
+        damage = math.ceil(self.PlayerData.Power * 3)
     end
     damage = damage + math.random(1,5)
     --大招伤害计算
@@ -583,7 +589,6 @@ function TopFightPanel:EnemyHpLoading()
 end
 function TopFightPanel:ShowWin()
     self.WinPanel:SetActive(true)
-    Debug.LogError("你赢了")
 end
 function TopFightPanel:EnemyRound()
     --回合数减少
@@ -629,7 +634,6 @@ function TopFightPanel:BossAttack()
             self.PlayerData.HP_cur = 0 
             self.hp_text.text = self.PlayerData.HP_cur
             self.hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
-            Debug.LogError("你TM输了")
             self.LosePanel:SetActive(true)
         else
             self.hp_text.text = self.PlayerData.HP_cur
