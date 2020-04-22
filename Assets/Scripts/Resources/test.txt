@@ -15,19 +15,9 @@ function Awake()
     LevelSelectPanel:new()
 end
 
-function MoveToMenu()
-end
-
 function LoadSprites()
     for i = 1,6,1 do
-        -- Textures/Crush/Icon
         sprites[i] = Resources.Load("Textures/7Tex/Icon_"..i,Sprite)
-        -- sprites[i] = Resources.Load("Textures/7Tex/Icon","Icon_"..i,Sprite)
     end
 end
 LoadSprites()
-
-
-function Update()
-    x:Update()
-end
