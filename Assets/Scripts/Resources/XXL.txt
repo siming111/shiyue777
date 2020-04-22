@@ -19,6 +19,7 @@ function XXL:new()
     self.animatorTable = {}
     self.combo = 0
     self.clearSounds = {}
+    self.lockBlockTable = {}
     -- for i = 1,maxI,1 do
     --     table.insert(self.animatorTable,{})
     -- end
@@ -541,10 +542,12 @@ function XXL:SpecialEvent()
                 self.lock1.gameObject:SetActive(false)
                 self.lock2.gameObject:SetActive(false)
                 for key,value in pairs(XXL:GetRandomBlockItem(3))do
+                    table.insert(self.lockBlockTable,value)
                     value.blockType = value.blockType * lockKey
                     value.block:Find("LockImage").gameObject:SetActive(true)
                     value.block:GetComponent("Button").interactable = false
                 end
+                XXL:UnlockBlock()
                 selectPanel:SetActive(false)
                 -- Debug.LogError("!!!!进入FALL 稳态")
                 -- XXL:ShowFightData()
@@ -577,6 +580,12 @@ function XXL:GetRandomBlockItem(number)--获取随机的不同砖块（number不
     return randomBlockItemTable
 end
 
-
+function XXL:UnlockBlock()
+    for key,value in pairs(self.lockBlockTable) do
+        value.lockImage:GetComponent(Animator):SetBool("Lock",false)
+        value.blockType = value.blockType / lockKey
+        value.block:GetComponent(Button).interactable = true
+    end
+end
 
 return XXL

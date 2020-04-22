@@ -113,6 +113,28 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &121930267 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1065571480272734, guid: b7e2017341cfb084d94caa181d30ee09,
+    type: 2}
+  m_PrefabInternal: {fileID: 855000452}
+--- !u!95 &121930271
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 121930267}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3a9e3c743279d5842b67011e10f2d96f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1001 &453316309
 Prefab:
   m_ObjectHideFlags: 0
@@ -486,6 +508,15 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: b654729480f8cad42bda21fc5d988bfd,
         type: 3}
+    - target: {fileID: 224016984980311086, guid: b7e2017341cfb084d94caa181d30ee09,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1065571480272734, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 95775532822759386, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
