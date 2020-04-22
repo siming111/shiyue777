@@ -1,9 +1,9 @@
 local BlockTypeBuilder = BlockTypeBuilder or {}
 
-local hp = 23
-local sheild = hp + 19
-local energy = sheild + 18
-local power = energy + 40
+local hp = 18
+local sheild = hp + 18
+local energy = sheild + 14
+local power = energy + 50
 
 BlockTypeBuilder.hp = hp
 BlockTypeBuilder.shield = sheild

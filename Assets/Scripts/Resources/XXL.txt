@@ -28,12 +28,12 @@ end
 function XXL:Hello()
     XXL:InitPositionTable()
     XXL:InitSounds()
+    self.lock1.transform.localPosition = Vector3(1737,542,0)
+    self.lock2.transform.localPosition = Vector3(-560,493,0)
+    self.lock1:SetActive(true)
+    self.lock2:SetActive(true)--lock使用leantween.move制作动画，下一场游戏开始时应该初始化lock
     TopFightPanel:Init()
-    aa = { ii = 1}
-    bb = { ii = 1}
-    if(aa==bb)then
-        Debug.Log("lllllllllllll")
-    end
+    specialEventFlag = true
     if blockItems then 
        for i,v in pairs(blockItems) do 
             if v then 
@@ -88,7 +88,7 @@ function XXL:Hello()
 end
 
 function XXL:InitSounds()
-    for i=1,8 do
+    for i=1,9 do
         table.insert(self.clearSounds,Resources.Load("Sounds/Clear/jewel_"..i,AudioClip))
     end
 end
@@ -288,7 +288,9 @@ function XXL:Judge()
         --         -- s = s.."}\n"
         --     end
         -- end
-        self.combo = self.combo + 1
+        if(self.combo<9)then
+            self.combo = self.combo + 1
+        end
         -- print(self.combo)
         AudioSource.PlayClipAtPoint(self.clearSounds[self.combo], self.blockBoard.transform.position);
         for key,value in pairs(singleClearBlocks) do
@@ -335,7 +337,7 @@ function XXL:Fall()--砖块掉落
                                 )
                                 -- XXL:Fall()
                             else
-                                if(TopFightPanel.EnemyData.Hp_cur<=900 and specialEventFlag) then
+                                if(TopFightPanel.EnemyData.Hp_cur/TopFightPanel.EnemyData.Hp_total<=0.8 and specialEventFlag) then
                                     XXL:SpecialEvent()
                                     specialEventFlag = false
                                 else
