@@ -167,15 +167,6 @@ function XXL:Click(blockItem)
                 LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time):setOnComplete(
                     function()
                         if(XXL:Judge())then
-                            -- local s = ""
-                            -- for key,value in pairs(self.fightData) do
-                            --     s = s .. "{"
-                            --     for key1,value1 in pairs(value) do
-                            --         s = s ..key1.."="..value1..","
-                            --     end
-                            --     s = s .. "},"
-                            -- end
-                            -- Debug.Log(s)
                             self.fightData.isFirstClick = true
                             LuaTimer.Add(1200,
                                 function()
@@ -183,12 +174,7 @@ function XXL:Click(blockItem)
                                     TopFightPanel:GetInstance():UpdateRound(self.fightData)
                                 end
                             )
-                            -- XXL:Fall()--砖块掉落
                         else
-                            ---------------------
-                            -- selectPanel:SetActive(false)
-                            -- Debug.LogError("!!!!进入FALL 稳态")
-                            -- TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
                             LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], time)
                             LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time):setOnComplete(
                                 function()
@@ -209,8 +195,6 @@ function XXL:Click(blockItem)
             end
         end
     end
-    -- XXL:Show()
-    -- Debug.Log("first:i="..clickBlocks.firstBlock.i..",j="..clickBlocks.firstBlock.j)
 end
 
 function XXL:ShowFightData()
@@ -250,7 +234,6 @@ function XXL:Judge()--判断可以被消除的砖块，如果有消除发生，�
         if(isFirstBlock)then
             table.insert(self.fightData,self.fightData[1])
             self.fightData[1] = {type = t,number = num}
-            -- Debug.Log("change!!!!!!!!!!!!!!!!!!")
         else
             table.insert(self.fightData,{type = t,number = num})
         end
@@ -271,10 +254,6 @@ function XXL:Judge()--判断可以被消除的砖块，如果有消除发生，�
     end
 end
 
-function XXL:NewTypeBlock()
-    -- Debug.Log("hello")
-end
-
 function XXL:Fall()--砖块掉落
     flag = true--是否添加动画结束事件标签
     for j=1,maxJ,1 do
@@ -291,20 +270,15 @@ function XXL:Fall()--砖块掉落
                                 self.fightData.isFirstClick = false
                                 LuaTimer.Add(1200,
                                 function()
-                                    -- Debug.LogError("调用延时~~")
-                                    -- XXL:ShowFightData()
                                     TopFightPanel:GetInstance():UpdateRound(self.fightData)
                                 end
                                 )
-                                -- XXL:Fall()
                             else
                                 if(TopFightPanel.EnemyData.Hp_cur/TopFightPanel.EnemyData.Hp_total<=0.8 and specialEventFlag) then
                                     XXL:SpecialEvent()
                                     specialEventFlag = false
                                 else
                                     selectPanel:SetActive(false)
-                                -- Debug.LogError("!!!!进入FALL 稳态")
-                                -- XXL:ShowFightData()
                                     TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
                                 end
                             end
@@ -346,7 +320,6 @@ function XXL:PrintClearBlock(clearBlocks)
 end
 
 function XXL:IsOK666()--666工作组检测
-    -- self.fightData = {}
     local clearBlocks = {}
     local OK = false
     for i=1,maxI,1 do--初始化清除表
@@ -359,13 +332,11 @@ function XXL:IsOK666()--666工作组检测
                 blockItems[i][j].blockType==blockItems[i][j+2].blockType)--成功检测到消除
             then 
                 OK = true
-                -- self.fightData[#self.fightData+1] ={type = blockItems[i][j].blockType}
                 local clearTable = {}
                 for k=j,maxJ,1 do
                     if(blockItems[i][k].blockType==blockItems[i][j].blockType)then
                         table.insert(clearTable,blockItems[i][k])
                         clearBlocks[i][k] = clearTable
-                        -- Debug.Log("i="..i.."k="..k)
                     else
                         break
                     end
@@ -380,7 +351,6 @@ function XXL:IsOK666()--666工作组检测
                 blockItems[i][j].blockType==blockItems[i+2][j].blockType)--成功检测到消除
             then 
                 OK = true
-                -- self.fightData[#self.fightData+1] = {type = blockItems[i][j].blockType}
                 local clearTable = {}
                 local k = i
                 while(k<=maxI)do
@@ -394,7 +364,6 @@ function XXL:IsOK666()--666工作组检测
                         end
                     else
                         i = k - 1
-                        -- Debug.Log("i="..i.."------------------")
                         flagtt = true
                         break
                     end
@@ -454,17 +423,7 @@ function XXL:IsOK()
     if(OK==true)then
         return clearBlocks
     end
-    -- if #self.fightData ==0 then 
-    --     Debug.LogError("!!!!进入FALL 稳态")
-    --     TopFightPanel:GetInstance():UpdateRound({[1] = { type = 13 }})
-    -- end
     return nil
-    -- if(OK == true)
-    -- then 
-    --     return clearBlock
-    -- else 
-    --     return nil
-    -- end
 end
 
 function XXL:Show()
@@ -498,10 +457,7 @@ function XXL:SpecialEvent()
                     value.block:Find("LockImage").gameObject:SetActive(true)
                     value.block:GetComponent("Button").interactable = false
                 end
-                -- XXL:UnlockBlock()
                 selectPanel:SetActive(false)
-                -- Debug.LogError("!!!!进入FALL 稳态")
-                -- XXL:ShowFightData()
                 TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
                 self.lock1:GetComponent(AudioSource).enabled = false
             end)
@@ -509,14 +465,6 @@ function XXL:SpecialEvent()
     )
 
     Debug.Log("SpecialEvent!")
-    -- for i = 1,7,1 do
-    --     blockItems[i][1].blockType = blockItems[i][1].blockType*(blockItems[i][1].i+blockItems[i][1].j+3)
-    -- end
-    -- for i = 1,7,1 do
-    --     blockItems[i][8].blockType = blockItems[i][8].blockType*(blockItems[i][8].i+blockItems[i][8].j+3)
-    -- end
-    -- GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock1"):SetActive(true)
-    -- GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Lock2"):SetActive(true)
 end
 
 function XXL:GetRandomBlockItem(number)--获取随机的不同砖块（number不宜过大）

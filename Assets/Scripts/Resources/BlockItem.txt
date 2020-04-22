@@ -18,22 +18,10 @@ function BlockItem:new(i,j,blockType)
     o.block.gameObject:SetActive(true)
     o.selectImage = o.block.transform:Find("selectImage")
     o.lockImage = o.block.transform:Find("LockImage")
-    -- o.selectImage.gameObject:GetComponent(UnityEngine.UI.Image).sprite = Resources.Load("Textures/7Tex/Pause",Sprite)
-    -- o.selectImage.gameObject:SetActive(false)
     o.block.transform.localPosition = positionTable[i][j]
     o.image = o.block.transform:Find("icon")
     o.image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[blockType]
-    -- self.block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
-    --     function()
-    --         Click(self)
-    --     end
-    -- )
     return o
 end
-
-
--- function Click(s)
---     Debug.Log("i = "..s.i..",j = "..s.j..",type = "..s.type)
--- end
 
 return BlockItem
