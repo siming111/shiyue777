@@ -222,19 +222,9 @@ function XXL:ShowFightData()
     print(s)
 end
 
-function XXL:Judge()
-    -- local clearBlocks = XXL:IsOK()--诗悦777版本
-    -- if(clearBlocks)then
-    --     for key, value in pairs(clearBlocks) do  
-    --         for key1, value1 in pairs(value) do
-    --             XXL:DestroyBlock(value1)
-    --         end
-    --     end
-    --     return true
-    -- else
-    --     return false
-    -- end
-    local clearBlocks = XXL:IsOK666()--666工作室版本
+function XXL:Judge()--判断可以被消除的砖块，如果有消除发生，调用destroy，返回true
+                                          --如果没有消除发生，返回false
+    local clearBlocks = XXL:IsOK666()
     local blockNumberTable = {}
     singleClearBlocks = {}
     self.fightData = {}
@@ -245,19 +235,11 @@ function XXL:Judge()
             end
         end
     end
-    -- s = ""
     for key, value in pairs(singleClearBlocks) do
-        -- s = s..#value.."-t"..value[1].blockType.."  "
-        -- local num = #value>=5 and #value or 5
         num = #value
         if(num>5)then
             num = 5
         end
-        -- local isFirst = "false"
-        -- for key1,value1 in pairs(value) do
-        --     isFirst = "true"
-        -- end
-        -- Debug.Log("num="..num)
         local isFirstBlock = false
         for key1,value1 in pairs(value) do
             if(value1==clickBlocks.firstBlock)then
@@ -273,38 +255,16 @@ function XXL:Judge()
             table.insert(self.fightData,{type = t,number = num})
         end
     end
-    -- Debug.Log(s)
-
-    -- s = ""
     if(clearBlocks)then
-        -- for key, value in pairs(clearBlocks) do  
-        --     for key1, value1 in pairs(value) do
-        --         -- s = s.."{"
-        --         for key2, value2 in pairs(value1) do
-        --             -- s = s.."i"..value2.i.."j"..value2.j.."t"..value2.blockType..","
-        --             if(blockItems[value2.i][value2.j] ~= nil)then
-        --                 XXL:DestroyBlock(value2)
-        --             end
-        --         end
-        --         -- s = s.."}\n"
-        --     end
-        -- end
-        if(self.combo<9)then
+        if(self.combo<9)then--combo最大值为9
             self.combo = self.combo + 1
         end
-        -- print(self.combo)
         AudioSource.PlayClipAtPoint(self.clearSounds[self.combo], self.blockBoard.transform.position);
         for key,value in pairs(singleClearBlocks) do
-            --singleClearBlocks存放了应该被消除的砖块信息，
-            --与clickBlock的firstBlock比较可以确定新生成砖块位置
-            -- if(#value>=4)then--第6组的生成新砖块逻辑
-            --     XXL:NewTypeBlock()
-            -- end
             for key1,value1 in pairs(value) do
                 XXL:DestroyBlock(value1)
             end
         end
-        -- Debug.Log(s)
         return true
     else
         return false
@@ -367,8 +327,6 @@ function XXL:Fall()--砖块掉落
             )
         end
     end
-    -- XXL:Show()
-    -- LeanTween.move(nil,nil,2).setOnComplete(XXL:SayHello())
 end
 
 function XXL:DestroyBlock(blockItem)
@@ -456,14 +414,7 @@ function XXL:IsOK666()--666工作组检测
     if(OK==true)then
         return clearBlocks
     end
-    -- Debug.LogError(#self.fightData)
     return nil
-    -- if(OK == true)
-    -- then 
-    --     return clearBlock
-    -- else 
-    --     return nil
-    -- end
 end
 
 function XXL:IsOK()
@@ -547,7 +498,7 @@ function XXL:SpecialEvent()
                     value.block:Find("LockImage").gameObject:SetActive(true)
                     value.block:GetComponent("Button").interactable = false
                 end
-                XXL:UnlockBlock()
+                -- XXL:UnlockBlock()
                 selectPanel:SetActive(false)
                 -- Debug.LogError("!!!!进入FALL 稳态")
                 -- XXL:ShowFightData()
